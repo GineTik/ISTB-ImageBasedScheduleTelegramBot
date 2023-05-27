@@ -9,7 +9,7 @@ namespace ISTB.TelegramBot
     {
         public static void Main(string[] args)
         {
-            var builder = new BotApplicationBuilder("6297259263:AAGFl9aJtYf0f4m2tarQwlZBtwcJLTZTHdM");
+            var builder = new BotApplicationBuilder();
             builder.Services.AddTransient<StartCommand>();
 
             var app = builder.Build();

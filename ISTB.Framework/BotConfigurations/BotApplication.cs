@@ -1,4 +1,5 @@
 ﻿using ISTB.Framework.Middlewares;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -10,14 +11,16 @@ namespace ISTB.Framework.BotConfigurations
     {
         private readonly List<Type> _middlwaresType;
         private readonly IServiceCollection _services;
-        private readonly string _apiKey;
+        private readonly IConfiguration _configuration;
         private IServiceProvider _serviceProvider;
 
-        public BotApplication(string apiKey, IServiceCollection services)
+        public BotApplication(BotApplicationBuilder builder)
         {
             _middlwaresType = new();
-            _services = services;
-            _apiKey = apiKey;
+            _services = builder.Services;
+            _configuration = builder.Configuration;
+
+            UseMiddleware<ExecutorContextMiddleware>();
         }
 
         public BotApplication UseMiddleware<T>()
@@ -28,10 +31,12 @@ namespace ISTB.Framework.BotConfigurations
             return this;
         }
 
-        public void Run()
+        public void Run(string? apiKey = null)
         {
+            apiKey ??= _configuration["ApiKey"];
+
             _serviceProvider = _services.BuildServiceProvider();
-            var client = new TelegramBotClient(_apiKey);
+            var client = new TelegramBotClient(apiKey);
 
             client.StartReceiving(invokeMiddlewares, handlePollingErrorAsync);
         }
