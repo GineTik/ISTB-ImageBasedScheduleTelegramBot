@@ -1,7 +1,6 @@
 ﻿using ISTB.Framework.BotConfigurations;
 using ISTB.Framework.Extensions.Middlewares;
-using ISTB.TelegramBot.Executors.Commands;
-using Microsoft.Extensions.DependencyInjection;
+using ISTB.Framework.Extensions.Services;
 
 namespace ISTB.TelegramBot
 {
@@ -9,11 +8,11 @@ namespace ISTB.TelegramBot
     {
         public static void Main(string[] args)
         {
-            var builder = new BotApplicationBuilder("6297259263:AAGFl9aJtYf0f4m2tarQwlZBtwcJLTZTHdM");
-            builder.Services.AddTransient<StartCommand>();
+            var builder = new BotApplicationBuilder();
+            builder.Services.AddExecutors();
 
             var app = builder.Build();
-            app.UseCommand();
+            app.UseExecutorCommands();
             app.Run();
 
             Console.ReadLine();

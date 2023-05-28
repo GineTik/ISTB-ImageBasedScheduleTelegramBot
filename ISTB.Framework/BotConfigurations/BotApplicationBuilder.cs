@@ -1,22 +1,29 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ISTB.Framework.Extensions.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISTB.Framework.BotConfigurations
 {
     public class BotApplicationBuilder
     {
         public IServiceCollection Services { get; }
+        public IConfiguration Configuration { get; }
 
-        public readonly string _apiKey;
-
-        public BotApplicationBuilder(string apiKey)
+        public BotApplicationBuilder()
         {
             Services = new ServiceCollection();
-            _apiKey = apiKey;
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName)
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            Services.AddSingleton(Configuration);
+            Services.AddUpdateContextAccessor();
         }
 
         public BotApplication Build()
         {
-            return new BotApplication(_apiKey, Services);
+            return new BotApplication(this);
         }
     }
 }
