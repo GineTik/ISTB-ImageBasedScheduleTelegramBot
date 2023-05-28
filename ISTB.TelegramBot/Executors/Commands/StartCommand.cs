@@ -8,11 +8,11 @@ namespace ISTB.TelegramBot.Executors.Commands
     [Command("start")]
     public class StartCommand : Executor
     {
-        private readonly ExecutorContext _context;
+        private readonly UpdateContext _context;
 
-        public StartCommand(ExecutorContextAccessor accessor)
+        public StartCommand(UpdateContextAccessor accessor)
         {
-            _context = accessor.ExecutorContext;
+            _context = accessor.UpdateContext;
         }
 
         public override async Task ExecuteAsync()

@@ -5,9 +5,9 @@ namespace ISTB.Framework.Extensions.Middlewares
 {
     public static class CommandExtension
     {
-        public static BotApplication UseCommand(this BotApplication app)
+        public static BotApplication UseExecutorCommands(this BotApplication app)
         {
-            return app.UseMiddleware<CommandMiddleware>();
+            return app.UseMiddleware<ExecutorCommandMiddleware>();
         }
     }
 }

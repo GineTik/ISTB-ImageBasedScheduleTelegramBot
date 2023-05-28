@@ -1,10 +1,10 @@
 ﻿namespace ISTB.Framework.Executors.Context
 {
-    public class ExecutorContextAccessor
+    public class UpdateContextAccessor
     {
-        private static readonly AsyncLocal<ExecutorContext> _executorContextCurrent = new AsyncLocal<ExecutorContext>();
+        private static readonly AsyncLocal<UpdateContext> _executorContextCurrent = new AsyncLocal<UpdateContext>();
 
-        public ExecutorContext? ExecutorContext
+        public UpdateContext? UpdateContext
         {
             get
             {

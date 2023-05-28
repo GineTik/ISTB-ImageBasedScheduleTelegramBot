@@ -18,7 +18,7 @@ namespace ISTB.Framework.BotConfigurations
                 .Build();
 
             Services.AddSingleton(Configuration);
-            Services.AddExecutorContextAccessor();
+            Services.AddUpdateContextAccessor();
         }
 
         public BotApplication Build()

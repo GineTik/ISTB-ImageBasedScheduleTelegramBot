@@ -6,16 +6,16 @@ namespace ISTB.Framework.Middlewares
 {
     public class ExecutorContextMiddleware : IMiddleware
     {
-        private ExecutorContextAccessor _accessor;
+        private UpdateContextAccessor _accessor;
 
-        public ExecutorContextMiddleware(ExecutorContextAccessor accessor)
+        public ExecutorContextMiddleware(UpdateContextAccessor accessor)
         {
             _accessor = accessor;
         }
 
         public async Task InvokeAsync(ITelegramBotClient botClient, Update update, Func<Task> next)
         {
-            _accessor.ExecutorContext = new ExecutorContext
+            _accessor.UpdateContext = new UpdateContext
             {
                 BotClient = botClient,
                 Update = update,
