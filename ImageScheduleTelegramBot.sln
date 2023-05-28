@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTB.TelegramBot", "ImageScheduleTelegramBot\ISTB.TelegramBot.csproj", "{887D7CA1-DE8F-4C35-A7C9-FBFEF2A79D27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISTB.DataAccess", "ISTB.DataAccess\ISTB.DataAccess.csproj", "{F33E9F78-067C-4763-931E-5426989B86FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTB.DataAccess", "ISTB.DataAccess\ISTB.DataAccess.csproj", "{F33E9F78-067C-4763-931E-5426989B86FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISTB.Framework", "ISTB.Framework\ISTB.Framework.csproj", "{5A12D6F6-35BE-409A-9375-5096CE7242D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTB.Framework", "ISTB.Framework\ISTB.Framework.csproj", "{5A12D6F6-35BE-409A-9375-5096CE7242D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISTB.BusinessLogic", "ISTB.BusinessLogic\ISTB.BusinessLogic.csproj", "{1AEA29CC-39FB-411D-A06B-CB09D0E3B0F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISTB.BusinessLogic", "ISTB.BusinessLogic\ISTB.BusinessLogic.csproj", "{1AEA29CC-39FB-411D-A06B-CB09D0E3B0F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISTB.TelegramBot", "ISTB.TelegramBot\ISTB.TelegramBot.csproj", "{7293998E-8359-422A-9D45-3874F2B2CE34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{887D7CA1-DE8F-4C35-A7C9-FBFEF2A79D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{887D7CA1-DE8F-4C35-A7C9-FBFEF2A79D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{887D7CA1-DE8F-4C35-A7C9-FBFEF2A79D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{887D7CA1-DE8F-4C35-A7C9-FBFEF2A79D27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F33E9F78-067C-4763-931E-5426989B86FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F33E9F78-067C-4763-931E-5426989B86FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F33E9F78-067C-4763-931E-5426989B86FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{1AEA29CC-39FB-411D-A06B-CB09D0E3B0F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AEA29CC-39FB-411D-A06B-CB09D0E3B0F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AEA29CC-39FB-411D-A06B-CB09D0E3B0F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7293998E-8359-422A-9D45-3874F2B2CE34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7293998E-8359-422A-9D45-3874F2B2CE34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7293998E-8359-422A-9D45-3874F2B2CE34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7293998E-8359-422A-9D45-3874F2B2CE34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

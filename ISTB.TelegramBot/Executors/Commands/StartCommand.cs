@@ -1,4 +1,5 @@
-﻿using ISTB.Framework.Attributes.ValidateExecutionAttributes;
+﻿using ISTB.DataAccess.EF;
+using ISTB.Framework.Attributes.ValidateExecutionAttributes;
 using ISTB.Framework.Executors;
 using ISTB.Framework.Executors.Context;
 using Telegram.Bot;
@@ -8,16 +9,16 @@ namespace ISTB.TelegramBot.Executors.Commands
     [Command("start")]
     public class StartCommand : Executor
     {
-        private readonly UpdateContext _context;
+        private readonly UpdateContext _userContext;
 
-        public StartCommand(UpdateContextAccessor accessor)
+        public StartCommand(UpdateContextAccessor accessor, DataContext dbContext)
         {
-            _context = accessor.UpdateContext;
+            _userContext = accessor.UpdateContext;
         }
 
         public override async Task ExecuteAsync()
         {
-            await _context.BotClient.SendTextMessageAsync(_context.ChatId, "Success");
+            await _userContext.BotClient.SendTextMessageAsync(_userContext.ChatId, "Success");
         }
     }
 }
