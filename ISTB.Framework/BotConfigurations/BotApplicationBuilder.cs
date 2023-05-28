@@ -1,4 +1,5 @@
 ﻿using ISTB.Framework.Extensions.Services;
+using ISTB.Framework.Factories.CofigurationFactory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,10 +13,7 @@ namespace ISTB.Framework.BotConfigurations
         public BotApplicationBuilder()
         {
             Services = new ServiceCollection();
-            Configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName)
-                .AddJsonFile("appsettings.json")
-                .Build();
+            Configuration = new ConfigurationFactory().CreateConfiguration();
 
             Services.AddSingleton(Configuration);
             Services.AddUpdateContextAccessor();
