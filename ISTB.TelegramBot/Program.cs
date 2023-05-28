@@ -1,10 +1,7 @@
-﻿using ISTB.DataAccess.EF;
-using ISTB.Framework.BotConfigurations;
+﻿using ISTB.Framework.BotConfigurations;
 using ISTB.Framework.Extensions.Middlewares;
 using ISTB.Framework.Extensions.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using ISTB.TelegramBot.Extensions.Services;
 
 namespace ISTB.TelegramBot
 {
@@ -14,9 +11,7 @@ namespace ISTB.TelegramBot
         {
             var builder = new BotApplicationBuilder();
             builder.Services.AddExecutors();
-            builder.Services.AddDbContext<DataContext>(
-                options => options.UseSqlServer(builder.Configuration.GetConnectionString("LocalConnection")));//("name=ConnectionStrings:LocalConnection"));
-
+            builder.Services.AddData(builder.Configuration);
 
             var app = builder.Build();
             app.UseExecutorCommands();
