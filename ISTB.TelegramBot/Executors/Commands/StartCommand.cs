@@ -11,7 +11,7 @@ namespace ISTB.TelegramBot.Executors.Commands
     {
         private readonly UpdateContext _userContext;
 
-        public StartCommand(UpdateContextAccessor accessor, DataContext dbContext)
+        public StartCommand(UpdateContextAccessor accessor)
         {
             _userContext = accessor.UpdateContext;
         }

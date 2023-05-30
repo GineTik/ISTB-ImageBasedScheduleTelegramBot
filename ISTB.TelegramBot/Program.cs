@@ -2,6 +2,7 @@
 using ISTB.Framework.Extensions.Middlewares;
 using ISTB.Framework.Extensions.Services;
 using ISTB.TelegramBot.Extensions.Services;
+using Telegram.Bot;
 
 namespace ISTB.TelegramBot
 {

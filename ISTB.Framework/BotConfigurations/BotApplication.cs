@@ -1,4 +1,6 @@
-﻿using ISTB.Framework.Middlewares;
+﻿using ISTB.Framework.Delegates;
+using ISTB.Framework.Executors.Context;
+using ISTB.Framework.Middlewares;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -9,33 +11,45 @@ namespace ISTB.Framework.BotConfigurations
 {
     public class BotApplication
     {
-        private readonly List<Type> _middlwaresType;
+        private readonly ICollection<Func<UpdateDelegate, UpdateDelegate>> _middlewares;
         private readonly IServiceCollection _services;
-        private readonly IConfiguration _configuration;
         private IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
 
         public BotApplication(BotApplicationBuilder builder)
         {
-            _middlwaresType = new();
+            _middlewares = new List<Func<UpdateDelegate, UpdateDelegate>>();
             _services = builder.Services;
             _configuration = builder.Configuration;
 
-            UseMiddleware<ExecutorContextMiddleware>();
+            UseMiddleware<UpdateContextMiddleware>();
+        }
+
+        public BotApplication Use(Func<UpdateContext, UpdateDelegate, Task> middlware)
+        {
+            ArgumentNullException.ThrowIfNull(middlware);
+
+            _middlewares.Add(next =>
+                async context => await middlware(context, next));
+
+            return this;
         }
 
         public BotApplication UseMiddleware<T>()
             where T : class, IMiddleware
         {
             _services.AddTransient<T>();
-            _middlwaresType.Add(typeof(T));
+            _middlewares.Add(next =>
+                async context => await (_serviceProvider.GetService<T>()).InvokeAsync(context, next));
+
             return this;
         }
 
         public void Run(string? apiKey = null)
         {
-            apiKey ??= _configuration["ApiKey"];
+            apiKey ??= _configuration["ApiKey"] ??
+                throw new ArgumentNullException("ApiKey is null in appsettings.json and parameters");
 
-            _serviceProvider = _services.BuildServiceProvider();
             var client = new TelegramBotClient(apiKey);
 
             client.StartReceiving(invokeMiddlewares, handlePollingErrorAsync);
@@ -43,9 +57,18 @@ namespace ISTB.Framework.BotConfigurations
 
         private async Task invokeMiddlewares(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            int nextMiddlewareIndex = 0;
-            var next = configurateNext(botClient, update, nextMiddlewareIndex);
-            await next.Invoke();
+            _serviceProvider = _services.BuildServiceProvider();
+
+            UpdateDelegate firstMiddlware = context => Task.CompletedTask;
+
+            foreach (var middlwareFactory in _middlewares.Reverse())
+                firstMiddlware = middlwareFactory.Invoke(firstMiddlware);
+
+            await firstMiddlware.Invoke(new UpdateContext
+            {
+                BotClient = botClient,
+                Update = update,
+            });
         }
 
         private Task handlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -59,21 +82,6 @@ namespace ISTB.Framework.BotConfigurations
 
             Console.WriteLine(errorMessage);
             return Task.CompletedTask;
-        }
-
-        private Func<Task> configurateNext(ITelegramBotClient botClient, Update update, int nextMiddlewareIndex)
-        {
-            return async () =>
-            {
-                if (_middlwaresType.Count <= nextMiddlewareIndex)
-                    return;
-
-                var middlawareType = _middlwaresType[nextMiddlewareIndex];
-                var middleware = (IMiddleware)_serviceProvider.GetRequiredService(middlawareType);
-
-                var next = configurateNext(botClient, update, ++nextMiddlewareIndex);
-                await middleware.InvokeAsync(botClient, update, next);
-            };
         }
     }
 }
