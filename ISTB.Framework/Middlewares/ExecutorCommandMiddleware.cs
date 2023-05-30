@@ -1,10 +1,10 @@
 ﻿using ISTB.Framework.Attributes.ValidateExecutionAttributes;
 using ISTB.Framework.Configurations;
+using ISTB.Framework.Delegates;
 using ISTB.Framework.Executors;
+using ISTB.Framework.Executors.Context;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Middlewares
 {
@@ -19,21 +19,21 @@ namespace ISTB.Framework.Middlewares
             _executorsConfiguration = executorsConfiguration;
         }
 
-        public async Task InvokeAsync(ITelegramBotClient botClient, Update update, Func<Task> next)
+        public async Task InvokeAsync(UpdateContext updateContext, UpdateDelegate next)
         {
-            if (update.Message == null)
+            if (updateContext.Update.Message is not { } message)
             {
-                await next();
+                await next(updateContext);
                 return;
             }
 
             var executorType = _executorsConfiguration.ExecutorsTypes
                 .FirstOrDefault(type => type.GetCustomAttributes<CommandAttribute>()
-                        .Any(attribute => attribute.ValidateExecution(update.Message)));
+                        .Any(attribute => attribute.ValidateExecution(message)));
 
             if (executorType == null)
             {
-                await next();
+                await next(updateContext);
                 return;
             }
 
