@@ -1,7 +1,9 @@
-﻿using ISTB.Framework.BotApplication;
+﻿using ISTB.BusinessLogic.AutoMapper.Profiles;
+using ISTB.Framework.BotApplication;
 using ISTB.Framework.Extensions.Middlewares;
 using ISTB.Framework.Extensions.Services;
 using ISTB.TelegramBot.Extensions.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISTB.TelegramBot
 {
@@ -12,6 +14,8 @@ namespace ISTB.TelegramBot
             var builder = new BotApplicationBuilder();
             builder.Services.AddExecutors();
             builder.Services.AddData(builder.Configuration);
+            builder.Services.AddAutoMapper(typeof(GroupProfile));
+            builder.Services.AddServices();
 
             var app = builder.Build();
             app.UseExecutorCommands();
