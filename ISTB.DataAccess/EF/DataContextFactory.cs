@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.Factories.CofigurationFactory;
+﻿using ISTB.Framework.Factories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

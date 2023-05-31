@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace ISTB.Framework.Factories.CofigurationFactory
+namespace ISTB.Framework.Factories.Interfaces
 {
     public interface IConfigurationFactory
     {

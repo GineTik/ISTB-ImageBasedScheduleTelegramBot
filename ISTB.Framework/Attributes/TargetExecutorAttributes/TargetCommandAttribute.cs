@@ -1,19 +1,18 @@
-﻿using ISTB.Framework.Executors;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
-namespace ISTB.Framework.Attributes.ValidateExecutionAttributes
+namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class CommandAttribute : ValidateExecutionAttribute
+    public class TargetCommandAttribute : TargetExecutorAttribute
     {
         public string Command { get; set; }
 
-        public CommandAttribute(string command)
+        public TargetCommandAttribute(string command)
         {
             Command = command;
         }
 
-        public override bool ValidateExecution(Message message)
+        public override bool IsTarget(Message message)
         {
             if (message.Text is not { } text)
                 return false;

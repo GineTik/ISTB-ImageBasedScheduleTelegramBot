@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ISTB.Framework.Factories.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
-namespace ISTB.Framework.Factories.CofigurationFactory
+namespace ISTB.Framework.Factories.Implementations
 {
     public class ConfigurationFactory : IConfigurationFactory
     {

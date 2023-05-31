@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.Executors.Context;
+﻿using ISTB.Framework.BotApplication.Context;
 
 namespace ISTB.Framework.Delegates
 {
