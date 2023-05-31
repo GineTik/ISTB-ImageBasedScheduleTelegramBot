@@ -11,6 +11,8 @@ namespace ISTB.Framework.BotApplication
 {
     public class BotApplication
     {
+        private UpdateDelegate _firstMiddleware;
+
         private readonly ICollection<Func<UpdateDelegate, UpdateDelegate>> _middlewares;
         private readonly IServiceCollection _services;
         private IServiceProvider _serviceProvider;
@@ -50,13 +52,6 @@ namespace ISTB.Framework.BotApplication
             apiKey ??= _configuration["ApiKey"] ??
                 throw new ArgumentNullException("ApiKey is null in appsettings.json and parameters");
 
-            var client = new TelegramBotClient(apiKey);
-
-            client.StartReceiving(invokeMiddlewares, handlePollingErrorAsync);
-        }
-
-        private async Task invokeMiddlewares(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-        {
             _serviceProvider = _services.BuildServiceProvider();
 
             UpdateDelegate firstMiddlware = context => Task.CompletedTask;
@@ -64,7 +59,15 @@ namespace ISTB.Framework.BotApplication
             foreach (var middlwareFactory in _middlewares.Reverse())
                 firstMiddlware = middlwareFactory.Invoke(firstMiddlware);
 
-            await firstMiddlware.Invoke(new UpdateContext
+            _firstMiddleware = firstMiddlware;
+
+            var client = new TelegramBotClient(apiKey);
+            client.StartReceiving(invokeMiddlewares, handlePollingErrorAsync);
+        }
+
+        private async Task invokeMiddlewares(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            await _firstMiddleware.Invoke(new UpdateContext
             {
                 Client = botClient,
                 Update = update,
