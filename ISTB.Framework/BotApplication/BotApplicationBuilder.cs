@@ -1,9 +1,9 @@
 ﻿using ISTB.Framework.Extensions.Services;
-using ISTB.Framework.Factories.CofigurationFactory;
+using ISTB.Framework.Factories.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISTB.Framework.BotConfigurations
+namespace ISTB.Framework.BotApplication
 {
     public class BotApplicationBuilder
     {

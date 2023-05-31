@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.BotConfigurations;
+﻿using ISTB.Framework.BotApplication;
 using ISTB.Framework.Extensions.Middlewares;
 using ISTB.Framework.Extensions.Services;
 using ISTB.TelegramBot.Extensions.Services;

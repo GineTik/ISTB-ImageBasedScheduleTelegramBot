@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.Executors.Context;
+﻿using ISTB.Framework.BotApplication.Context;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISTB.Framework.Extensions.Services
