@@ -1,5 +1,5 @@
-﻿using ISTB.Framework.Delegates;
-using ISTB.Framework.Executors.Context;
+﻿using ISTB.Framework.BotApplication.Context;
+using ISTB.Framework.Delegates;
 using ISTB.Framework.Middlewares;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 
-namespace ISTB.Framework.BotConfigurations
+namespace ISTB.Framework.BotApplication
 {
     public class BotApplication
     {
@@ -66,7 +66,7 @@ namespace ISTB.Framework.BotConfigurations
 
             await firstMiddlware.Invoke(new UpdateContext
             {
-                BotClient = botClient,
+                Client = botClient,
                 Update = update,
             });
         }

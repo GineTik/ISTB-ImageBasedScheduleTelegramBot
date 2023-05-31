@@ -8,7 +8,7 @@ namespace ISTB.DataAccess.Repositories.EFImplementations
     public class EFRepository<TEntity> : IRepository<TEntity>
         where TEntity : Entity
     {
-        private readonly DataContext _context;
+        protected readonly DataContext _context;
 
         public EFRepository(DataContext context)
         {

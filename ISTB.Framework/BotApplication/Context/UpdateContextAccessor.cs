@@ -1,4 +1,4 @@
-﻿namespace ISTB.Framework.Executors.Context
+﻿namespace ISTB.Framework.BotApplication.Context
 {
     public class UpdateContextAccessor
     {

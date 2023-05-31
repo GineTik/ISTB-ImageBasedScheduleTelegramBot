@@ -4,6 +4,6 @@ namespace ISTB.DataAccess.Repositories.Interfaces
 {
     public interface IGroupRepository : IRepository<Group>
     {
-
+        ICollection<Group> GetListByTelegramUserId(long telegramUserId);
     }
 }

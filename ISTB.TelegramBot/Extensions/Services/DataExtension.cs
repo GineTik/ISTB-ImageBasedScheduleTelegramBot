@@ -1,4 +1,6 @@
 ﻿using ISTB.DataAccess.EF;
+using ISTB.DataAccess.Repositories.EFImplementations;
+using ISTB.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +13,9 @@ namespace ISTB.TelegramBot.Extensions.Services
         {
             services.AddDbContext<DataContext>(
                 options => options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
-            
+
+            services.AddTransient<IGroupRepository, GroupRepository>();
+
             return services;
         }
     }

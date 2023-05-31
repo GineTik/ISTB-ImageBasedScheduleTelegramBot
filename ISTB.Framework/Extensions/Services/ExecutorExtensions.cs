@@ -1,5 +1,7 @@
 ﻿using ISTB.Framework.Configurations;
 using ISTB.Framework.Executors;
+using ISTB.Framework.Factories.Implementations;
+using ISTB.Framework.Factories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -18,7 +20,9 @@ namespace ISTB.Framework.Extensions.Services
                 ),
             };
 
+            services.AddTransient<IExecutorFactory, ExecutorFactory>();
             services.AddSingleton(configuration);
+
             foreach (var type in configuration.ExecutorsTypes)
                 services.AddTransient(type);
 
