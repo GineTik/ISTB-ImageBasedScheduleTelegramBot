@@ -4,6 +4,8 @@ namespace ISTB.BusinessLogic.Services.Interfaces
 {
     public interface IGroupService
     {
-        ICollection<GroupDTO> GetGroupsByTelegramUserId(long telegramUserId);
+        Task<ICollection<GroupDTO>> GetGroupsByTelegramUserIdAsync(long telegramUserId);
+        Task<GroupDTO> CreateGroupAsync(CreateGroupDTO dto);
+        Task RemoveGroupAsync(RemoveGroupDTO dto);
     }
 }

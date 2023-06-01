@@ -15,6 +15,7 @@ namespace ISTB.TelegramBot.Extensions.Services
                 options => options.UseSqlServer(configuration.GetConnectionString("LocalConnection")));
 
             services.AddTransient<IGroupRepository, GroupRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             return services;
         }

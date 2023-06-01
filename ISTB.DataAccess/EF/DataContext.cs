@@ -1,5 +1,7 @@
 ﻿using ISTB.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using System;
 
 namespace ISTB.DataAccess.EF
 {
@@ -17,6 +19,10 @@ namespace ISTB.DataAccess.EF
         {
             builder.Entity<Role>().HasData(
                 new Role { Id = 1, Name = "Own" });
+
+            builder.Entity<User>()
+                .HasIndex(user => user.TelegramUserId)
+                .IsUnique(true);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace ISTB.DataAccess.Entities
         [Required]
         public string Name { get; set; }
 
+        public int UserId { get; set; }
         public User User { get; set; }
         public ICollection<Schedule> Schedules { get; set; }
     }

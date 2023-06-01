@@ -16,7 +16,7 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
 
         public override async Task ExecuteAsync()
         {
-            var groups = _service.GetGroupsByTelegramUserId(UpdateContext.TelegramUserId);
+            var groups = await _service.GetGroupsByTelegramUserIdAsync(UpdateContext.TelegramUserId);
 
             if (groups.Count() == 0)
                 await SendTextAsync("Ви ще не створили групу");

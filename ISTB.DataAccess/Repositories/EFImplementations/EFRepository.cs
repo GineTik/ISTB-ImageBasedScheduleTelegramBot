@@ -30,7 +30,8 @@ namespace ISTB.DataAccess.Repositories.EFImplementations
 
         public async Task RemoveById(int id)
         {
-            _context.Remove(id);
+            var entity = await GetByIdAsync(id) ?? throw new ArgumentException(nameof(id) + " not correct");
+            _context.Set<TEntity>().Remove(entity);
             await _context.SaveChangesAsync();
         }
 
