@@ -4,6 +4,6 @@ namespace ISTB.DataAccess.Repositories.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {
-
+        Task<User?> GetByTelegramUserIdAsync(long TelegramUserId);
     }
 }
