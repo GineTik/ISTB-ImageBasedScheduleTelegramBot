@@ -1,12 +1,19 @@
 ﻿using ISTB.BusinessLogic.DTOs.Group;
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
+using ISTB.Framework.Attributes.ValidateInputDataAttributes;
 using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Commands.Group
 {
-    [TargetCommand("create_group")]
-    public class CreateGroupCommand : Executor
+    public class CreateGroupCommandParameters
+    {
+        public string GroupName { get; set; }
+    }
+
+    [TargetCommands("create_group")]
+    [ValidateParameters(typeof(CreateGroupCommandParameters))]
+    public class CreateGroupCommand : CommandExecutor<CreateGroupCommandParameters>
     {
         private readonly IGroupService _service;
 
@@ -17,12 +24,18 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
 
         public override async Task ExecuteAsync()
         {
+            if (Parameters?.GroupName is not { } name)
+            {
+                await SendTextAsync("Ви не вказали ім'я групи!");
+                return;
+            }
+
             var group = await _service.CreateGroupAsync(new CreateGroupDTO
             {
-                Name = "Group Radom#" + new Random().Next(101, 300),
+                Name = name,
                 TelegramUserId = UpdateContext.TelegramUserId
             });
-            await SendTextAsync(group.Name);
+            await SendTextAsync("Створенна нова група з назвою: " + group.Name);
         }
     }
 }

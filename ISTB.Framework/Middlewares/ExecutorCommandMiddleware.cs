@@ -1,4 +1,5 @@
 ﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
+using ISTB.Framework.Attributes.ValidateInputDataAttributes;
 using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.Configurations;
 using ISTB.Framework.Delegates;
@@ -27,7 +28,7 @@ namespace ISTB.Framework.Middlewares
             }
 
             var executorType = _executorsConfiguration.ExecutorsTypes
-                .FirstOrDefault(type => type.GetCustomAttributes<TargetCommandAttribute>()
+                .FirstOrDefault(type => type.GetCustomAttributes<TargetCommandsAttribute>()
                         .Any(attribute => attribute.IsTarget(message)));
 
             if (executorType == null)
@@ -35,6 +36,11 @@ namespace ISTB.Framework.Middlewares
                 await next(updateContext);
                 return;
             }
+
+            var valid = executorType.GetCustomAttributes<ValidateInputDataAttribute>().Any(attr => attr.ValidateAsync(updateContext).Result);
+
+            if (valid == false)
+                return;
 
             var executor = _executorFactory.CreateExecutor(executorType, updateContext);
             await executor.ExecuteAsync();

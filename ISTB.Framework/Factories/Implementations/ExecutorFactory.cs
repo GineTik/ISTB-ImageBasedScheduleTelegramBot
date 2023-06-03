@@ -19,7 +19,8 @@ namespace ISTB.Framework.Factories.Implementations
             ArgumentNullException.ThrowIfNull(type);
             ArgumentNullException.ThrowIfNull(updateContext);
 
-            if (type.BaseType != typeof(Executor))
+            var baseType = typeof(Executor);
+            if (type == baseType || baseType.IsAssignableFrom(type) == false)
                 throw new ArgumentException(nameof(type));
 
             var executor = (Executor)_serviceProvider.GetRequiredService(type);
