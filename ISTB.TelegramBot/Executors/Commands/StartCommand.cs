@@ -3,7 +3,7 @@ using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Commands
 {
-    [TargetCommand("start")]
+    [TargetCommands("start")]
     public class StartCommand : Executor
     {
         public override async Task ExecuteAsync()

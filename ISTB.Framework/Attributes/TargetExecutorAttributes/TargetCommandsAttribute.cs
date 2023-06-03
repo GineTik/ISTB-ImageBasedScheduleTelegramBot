@@ -2,14 +2,13 @@
 
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class TargetCommandAttribute : TargetExecutorAttribute
+    public class TargetCommandsAttribute : TargetExecutorAttribute
     {
-        public string Command { get; set; }
+        public string[] Commands { get; set; }
 
-        public TargetCommandAttribute(string command)
+        public TargetCommandsAttribute(string commands)
         {
-            Command = command;
+            Commands = commands.Replace(" ", "").Split(",");
         }
 
         public override bool IsTarget(Message message)
@@ -18,7 +17,7 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
                 return false;
 
             var command = text.Split(' ').FirstOrDefault();
-            if (command == '/' + Command)
+            if (Commands.Any(c => '/' + c == command))
                 return true;
 
             return false;

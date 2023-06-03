@@ -4,6 +4,7 @@ using ISTB.Framework.Factories.Implementations;
 using ISTB.Framework.Factories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using System.Security.AccessControl;
 
 namespace ISTB.Framework.Extensions.Services
 {
@@ -13,10 +14,12 @@ namespace ISTB.Framework.Extensions.Services
         {
             assemblies ??= new List<Assembly>() { Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly() };
 
+            var baseType = typeof(Executor);
             var configuration = new ExecutorsConfiguration()
             {
                 ExecutorsTypes = assemblies.SelectMany(assembly => 
-                    assembly.GetTypes().Where(type => type.BaseType == typeof(Executor))
+                    assembly.GetTypes().Where(type => type != baseType &&
+                                          baseType.IsAssignableFrom(type))
                 ),
             };
 
