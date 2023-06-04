@@ -18,6 +18,17 @@ namespace ISTB.TelegramBot
             builder.Services.AddServices();
 
             var app = builder.Build();
+            app.Use(async (updateContext, next) =>
+            {
+                try
+                {
+                    await next(updateContext);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            });
             app.UseExecutorCommands();
             app.Run();
 

@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types;
+﻿using ISTB.Framework.Attributes.BaseAttributes;
+using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {

@@ -1,22 +1,8 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using ISTB.Framework.Results;
 using System.Text.RegularExpressions;
 
 namespace ISTB.Framework.Parsers
 {
-    public class ParseResult
-    {
-        public enum ErrorTypeEnum
-        {
-            FewerParametersThanNeeded,
-            ConvertError
-        }
-
-        public int RequiredParametersCount { get; set; }
-        public ErrorTypeEnum? ErrorType { get; set; }
-        public object? Value { get; set; }
-        public bool IsSuccess => ErrorType == null;
-    }
-
     public static class CommandParametersParser
     {
         public static ParseResult Parse<TParameters>(string text)
@@ -25,7 +11,7 @@ namespace ISTB.Framework.Parsers
             return Parse(typeof(TParameters), text);
         }
 
-        public static ParseResult Parse(Type type, string text)
+        public static ParseResult Parse(Type type, string? text)
         {
             var args = Regex.Replace(text ?? "", "/\\w+", "");
 

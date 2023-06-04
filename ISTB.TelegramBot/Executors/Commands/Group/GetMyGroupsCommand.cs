@@ -4,7 +4,7 @@ using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Commands.Group
 {
-    [TargetCommands("get_my_groups")]
+    [TargetCommands("get_my_groups, gmg")]
     public class GetMyGroupsCommand : Executor
     {
         private readonly IGroupService _service;
