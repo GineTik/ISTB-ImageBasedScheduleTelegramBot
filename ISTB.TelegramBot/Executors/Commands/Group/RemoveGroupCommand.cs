@@ -1,5 +1,8 @@
-﻿using ISTB.BusinessLogic.Services.Interfaces;
+﻿using ISTB.BusinessLogic.DTOs.Group;
+using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
+using ISTB.Framework.Attributes.ValidateInputDataAttributes;
+using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Commands.Group
@@ -10,6 +13,7 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
     }
 
     [TargetCommands("rm_group, rmg")]
+    [RequireCorrectParameters(typeof(RemoveGroupCommandParameters), ErrorMessage = "Ви не вказали або вказали некоректно ім'я групи")]
     public class RemoveGroupCommand : CommandExecutor<RemoveGroupCommandParameters>
     {
         private readonly IGroupService _service;
@@ -19,10 +23,14 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
             _service = service;
         }
 
-        public override Task ExecuteAsync()
+        public override async Task ExecuteAsync()
         {
-            throw new NotImplementedException();
-            //_service.RemoveGroupAsync();
+            await _service.RemoveGroupAsync(new RemoveGroupDTO
+            { 
+                Name = Parameters.GroupName,
+                TelegramUserId = UpdateContext.TelegramUserId
+            });
+            await SendTextAsync("Група видалена");
         }
     }
 }
