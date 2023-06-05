@@ -4,7 +4,6 @@ using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Commands.Group
 {
-    [TargetCommands("get_my_groups, gmg")]
     public class GetMyGroupsCommand : Executor
     {
         private readonly IGroupService _service;
@@ -14,7 +13,8 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
             _service = service;
         }
 
-        public override async Task ExecuteAsync()
+        [TargetCommands("get_my_groups, gmg")]
+        public async Task ExecuteAsync()
         {
             var groups = await _service.GetGroupsByTelegramUserIdAsync(UpdateContext.TelegramUserId);
 

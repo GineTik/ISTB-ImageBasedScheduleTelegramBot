@@ -3,10 +3,11 @@ using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Commands
 {
-    [TargetCommands("start")]
+    //[TargetCommands("start")]
     public class StartCommand : Executor
     {
-        public override async Task ExecuteAsync()
+        [TargetCommands("start")]
+        public async Task ExecuteAsync()
         {
             await SendTextAsync("Success");
         }

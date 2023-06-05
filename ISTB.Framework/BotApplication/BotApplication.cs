@@ -1,5 +1,5 @@
 ﻿using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.Delegates;
+using ISTB.Framework.BotApplication.Delegates;
 using ISTB.Framework.Middlewares;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,23 +11,23 @@ namespace ISTB.Framework.BotApplication
 {
     public class BotApplication
     {
-        private UpdateDelegate _firstMiddleware;
+        private NextDelegate _firstMiddleware;
 
-        private readonly ICollection<Func<UpdateDelegate, UpdateDelegate>> _middlewares;
+        private readonly ICollection<Func<NextDelegate, NextDelegate>> _middlewares;
         private readonly IServiceCollection _services;
         private IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
 
         public BotApplication(BotApplicationBuilder builder)
         {
-            _middlewares = new List<Func<UpdateDelegate, UpdateDelegate>>();
+            _middlewares = new List<Func<NextDelegate, NextDelegate>>();
             _services = builder.Services;
             _configuration = builder.Configuration;
 
             UseMiddleware<UpdateContextMiddleware>();
         }
 
-        public BotApplication Use(Func<UpdateContext, UpdateDelegate, Task> middlware)
+        public BotApplication Use(Func<UpdateContext, NextDelegate, Task> middlware)
         {
             ArgumentNullException.ThrowIfNull(middlware);
 
@@ -54,7 +54,7 @@ namespace ISTB.Framework.BotApplication
 
             _serviceProvider = _services.BuildServiceProvider();
 
-            UpdateDelegate firstMiddlware = context => Task.CompletedTask;
+            NextDelegate firstMiddlware = context => Task.CompletedTask;
 
             foreach (var middlwareFactory in _middlewares.Reverse())
                 firstMiddlware = middlwareFactory.Invoke(firstMiddlware);

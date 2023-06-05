@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.Factories.Implementations;
+﻿using ISTB.Framework.CreationalClasses.Factories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -9,7 +9,6 @@ namespace ISTB.DataAccess.EF
     {
         public DataContext CreateDbContext(string[] args)
         {
-            //throw new Exception("1");
             var configuration = new ConfigurationFactory().CreateConfiguration();
 
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();

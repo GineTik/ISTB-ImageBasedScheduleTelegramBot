@@ -2,9 +2,9 @@
 
 namespace ISTB.Framework.Attributes.BaseAttributes
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public abstract class TargetExecutorAttribute : Attribute
     {
-        public abstract bool IsTarget(Message message);
+        public abstract bool IsTarget(Update update);
     }
 }

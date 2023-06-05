@@ -29,7 +29,7 @@ namespace ISTB.TelegramBot
                     Console.WriteLine($"Error: {ex.Message}");
                 }
             });
-            app.UseExecutorCommands();
+            app.UseTargetExecutor();
             app.Run();
 
             Console.ReadLine();

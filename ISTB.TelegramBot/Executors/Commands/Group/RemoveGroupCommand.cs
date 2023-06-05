@@ -11,8 +11,7 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
     {
         public string GroupName { get; set; }
     }
-
-    [TargetCommands("rm_group, rmg")]
+    
     [RequireCorrectParameters(typeof(RemoveGroupCommandParameters), ErrorMessage = "Ви не вказали або вказали некоректно ім'я групи")]
     public class RemoveGroupCommand : CommandExecutor<RemoveGroupCommandParameters>
     {
@@ -23,7 +22,8 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
             _service = service;
         }
 
-        public override async Task ExecuteAsync()
+        [TargetCommands("rm_group, rmg")]
+        public async Task ExecuteAsync()
         {
             await _service.RemoveGroupAsync(new RemoveGroupDTO
             { 
