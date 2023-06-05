@@ -18,7 +18,7 @@ namespace ISTB.DataAccess.EF
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Role>().HasData(
-                new Role { Id = 1, Name = "Own" });
+                new Role { Id = 1, Name = "Owner" });
 
             builder.Entity<User>()
                 .HasIndex(user => user.TelegramUserId)

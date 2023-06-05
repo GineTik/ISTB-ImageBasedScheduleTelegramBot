@@ -11,7 +11,6 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
         public string GroupName { get; set; }
     }
 
-    [TargetCommands("create_group, cg")]
     [RequireCorrectParameters(typeof(CreateGroupCommandParameters), ErrorMessage = "Ви забули або некоректно ввели назву групи")]
     public class CreateGroupCommand : CommandExecutor<CreateGroupCommandParameters>
     {
@@ -22,7 +21,8 @@ namespace ISTB.TelegramBot.Executors.Commands.Group
             _service = service;
         }
 
-        public override async Task ExecuteAsync()
+        [TargetCommands("create_group, cg")]
+        public async Task ExecuteAsync()
         {
             var group = await _service.CreateGroupAsync(new CreateGroupDTO
             {

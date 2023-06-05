@@ -12,16 +12,13 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
             Commands = commands.Replace(" ", "").Split(",");
         }
 
-        public override bool IsTarget(Message message)
+        public override bool IsTarget(Update update)
         {
-            if (message.Text is not { } text)
+            if (update?.Message?.Text is not { } text)
                 return false;
 
             var command = text.Split(' ').FirstOrDefault();
-            if (Commands.Any(c => '/' + c == command))
-                return true;
-
-            return false;
+            return Commands.Any(c => '/' + c == command);
         }
     }
 }
