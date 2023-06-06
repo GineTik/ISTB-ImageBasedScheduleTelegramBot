@@ -5,6 +5,6 @@ namespace ISTB.Framework.CreationalClasses.Factories.Interfaces
 {
     public interface IExecutorFactory
     {
-        Executor CreateExecutor(Type type, UpdateContext context);
+        Executor CreateExecutor(Type type);
     }
 }
