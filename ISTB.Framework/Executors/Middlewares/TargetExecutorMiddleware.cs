@@ -30,12 +30,13 @@ namespace ISTB.Framework.Executors.Middlewares
                 return;
             }
 
-            var executorType = methodInfo.DeclaringType ??
-                throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType");
-            var executor = _executorFactory.CreateExecutor(executorType, updateContext);
-            
             var text = updateContext.Update.Message?.Text ?? updateContext.Update.CallbackQuery?.Data ?? "";
             var parameters = _parameterParser.Parse(text, methodInfo.GetParameters());
+
+            var executorType = methodInfo.DeclaringType ??
+                throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType");
+            
+            var executor = _executorFactory.CreateExecutor(executorType, updateContext);
             await (Task)methodInfo.Invoke(executor, parameters);
         }
     }
