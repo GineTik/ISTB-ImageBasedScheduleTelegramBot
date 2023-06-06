@@ -1,7 +1,7 @@
 ﻿using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.BotApplication.Delegates;
 
-namespace ISTB.Framework.Middlewares
+namespace ISTB.Framework.Executors.Middlewares
 {
     public interface IMiddleware
     {

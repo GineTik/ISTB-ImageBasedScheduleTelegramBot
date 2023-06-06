@@ -1,5 +1,5 @@
-﻿using ISTB.Framework.CreationalClasses.Factories.Implementations;
-using ISTB.Framework.Extensions.Services;
+﻿using ISTB.Framework.BotApplication.Extensions.Services;
+using ISTB.Framework.CreationalClasses.Factories.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

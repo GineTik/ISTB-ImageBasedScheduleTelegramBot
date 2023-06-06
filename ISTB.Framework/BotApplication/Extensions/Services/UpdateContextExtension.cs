@@ -1,7 +1,7 @@
 ﻿using ISTB.Framework.BotApplication.Context;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISTB.Framework.Extensions.Services
+namespace ISTB.Framework.BotApplication.Extensions.Services
 {
     public static class UpdateContextExtension
     {
