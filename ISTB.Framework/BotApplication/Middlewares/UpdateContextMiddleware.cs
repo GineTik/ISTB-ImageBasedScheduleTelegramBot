@@ -1,6 +1,5 @@
 ﻿using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.BotApplication.Delegates;
-using ISTB.Framework.Executors.Middlewares;
 
 namespace ISTB.Framework.BotApplication.Middlewares
 {
