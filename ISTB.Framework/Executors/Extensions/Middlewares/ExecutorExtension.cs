@@ -1,6 +1,6 @@
-﻿using ISTB.Framework.Middlewares;
+﻿using ISTB.Framework.Executors.Middlewares;
 
-namespace ISTB.Framework.Extensions.Middlewares
+namespace ISTB.Framework.Executors.Extensions.Middlewares
 {
     public static class ExecutorExtension
     {

@@ -2,5 +2,5 @@
 
 namespace ISTB.Framework.BotApplication.Delegates
 {
-    public delegate Task NextDelegate(UpdateContext context);
+    public delegate Task NextDelegate();
 }

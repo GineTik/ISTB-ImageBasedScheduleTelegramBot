@@ -16,7 +16,7 @@ namespace ISTB.Framework.Executors
 
         public async Task<Message> SendTextAsync(string text, long? chatId = null)
         {
-            chatId ??= UpdateContext.ChatId; 
+            chatId ??= UpdateContext.ChatId;
             return await UpdateContext.Client.SendTextMessageAsync(chatId, text);
         }
     }

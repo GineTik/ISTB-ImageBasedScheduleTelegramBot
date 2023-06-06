@@ -14,4 +14,10 @@
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Attributes\ValidateInputDataAttributes\" />
+    <Folder Include="Storages\Implementations\" />
+    <Folder Include="Storages\Interfaces\" />
+  </ItemGroup>
+
 </Project>
