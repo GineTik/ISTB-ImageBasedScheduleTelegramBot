@@ -4,13 +4,13 @@ using Telegram.Bot.Types;
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class TargetCallbackDataAttribute : TargetExecutorAttribute
+    public class TargetCallbacksDatasAttribute : TargetExecutorAttribute
     {
-        public string CallbackData { get; set; }
+        public string[] CallbacksDatas { get; set; }
 
-        public TargetCallbackDataAttribute(string callbackData)
+        public TargetCallbacksDatasAttribute(string callbacksDatas)
         {
-            CallbackData = callbackData;
+            CallbacksDatas = callbacksDatas.Replace(" ", "").Split(",");
         }
 
         public override bool IsTarget(Update update)
@@ -18,7 +18,7 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
             if (update?.CallbackQuery?.Data is not { } data)
                 return false;
 
-            return data == CallbackData;
+            return CallbacksDatas.Contains(data);
         }
     }
 }

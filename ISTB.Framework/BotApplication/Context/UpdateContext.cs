@@ -8,8 +8,10 @@ namespace ISTB.Framework.BotApplication.Context
         public ITelegramBotClient Client { get; set; }
         public Update Update { get; set; }
         public long ChatId => Update.Message?.Chat?.Id ??
-                              Update.CallbackQuery?.Message?.Chat?.Id ?? -1;
+                              Update.CallbackQuery?.Message?.Chat?.Id ?? 
+                              throw new InvalidDataException("Don't found ChatId");
         public long TelegramUserId => Update.Message?.From?.Id ??
-                              Update.CallbackQuery?.Message?.From?.Id ?? -1;
+                              Update.CallbackQuery?.Message?.From?.Id ?? 
+                              throw new InvalidDataException("Don't found TelegramUserId");
     }
 }

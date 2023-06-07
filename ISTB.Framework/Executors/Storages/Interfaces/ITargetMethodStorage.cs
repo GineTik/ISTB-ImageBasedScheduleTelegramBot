@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using ISTB.Framework.BotApplication.Context;
+using System.Reflection;
 using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Executors.Storages.Interfaces
@@ -7,6 +8,6 @@ namespace ISTB.Framework.Executors.Storages.Interfaces
     {
         public IEnumerable<MethodInfo> Methods { get; }
 
-        MethodInfo? GetMethodInfoByUpdate(Update update);
+        MethodInfo? GetMethodInfoToExecute(Update update);
     }
 }

@@ -18,7 +18,7 @@ namespace ISTB.Framework.Executors.Storages.Implementations
                         throw new Exception($"Return type of method {method.Name} not Task"));
         }
 
-        public MethodInfo? GetMethodInfoByUpdate(Update update)
+        public MethodInfo? GetMethodInfoToExecute(Update update)
         {
             return Methods.FirstOrDefault(method =>
                 method
