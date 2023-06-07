@@ -7,5 +7,6 @@ namespace ISTB.BusinessLogic.Services.Interfaces
         Task<ICollection<GroupDTO>> GetGroupsByTelegramUserIdAsync(long telegramUserId);
         Task<GroupDTO> CreateGroupAsync(CreateGroupDTO dto);
         Task RemoveGroupAsync(RemoveGroupDTO dto);
+        Task ChangeGroupNameAsync(ChangeGroupNameDTO dto);
     }
 }

@@ -4,11 +4,11 @@
     {
         private static readonly AsyncLocal<UpdateContext> _executorContextCurrent = new AsyncLocal<UpdateContext>();
 
-        public UpdateContext? UpdateContext
+        public UpdateContext UpdateContext
         {
             get
             {
-                return _executorContextCurrent.Value;
+                return _executorContextCurrent.Value ?? throw new InvalidOperationException("UpdateContext is null");
             }
             set
             {

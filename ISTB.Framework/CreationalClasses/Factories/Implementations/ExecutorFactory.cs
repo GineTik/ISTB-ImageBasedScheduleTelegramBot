@@ -10,10 +10,10 @@ namespace ISTB.Framework.CreationalClasses.Factories.Implementations
         private readonly IServiceProvider _serviceProvider;
         private readonly UpdateContext _updateContext;
 
-        public ExecutorFactory(IServiceProvider serviceProvider, UpdateContext updateContext)
+        public ExecutorFactory(IServiceProvider serviceProvider, UpdateContextAccessor accessor)
         {
             _serviceProvider = serviceProvider;
-            _updateContext = updateContext;
+            _updateContext = accessor.UpdateContext;
         }
 
         public Executor CreateExecutor(Type type)
