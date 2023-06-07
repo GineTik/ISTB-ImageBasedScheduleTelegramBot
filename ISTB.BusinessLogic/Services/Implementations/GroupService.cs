@@ -8,15 +8,20 @@ namespace ISTB.BusinessLogic.Services.Implementations
 {
     public class GroupService : IGroupService
     {
-        private readonly IGroupRepository _repository;
+        private readonly IGroupRepository _groupRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
         public GroupService(IGroupRepository repository, IMapper mapper, IUserRepository userRepository)
         {
-            _repository = repository;
+            _groupRepository = repository;
             _mapper = mapper;
             _userRepository = userRepository;
+        }
+
+        public Task ChangeGroupNameAsync(ChangeGroupNameDTO dto)
+        {
+            return _groupRepository.ChangeGroupNameAsync(dto.OldName, dto.NewName, dto.TelegramUserId);
         }
 
         public async Task<GroupDTO> CreateGroupAsync(CreateGroupDTO dto)
@@ -31,7 +36,7 @@ namespace ISTB.BusinessLogic.Services.Implementations
                 });
             }
 
-            var group = await _repository.AddAsync(new Group
+            var group = await _groupRepository.AddAsync(new Group
             {
                 Name = dto.Name,
                 UserId = user.Id
@@ -41,13 +46,13 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
         public async Task<ICollection<GroupDTO>> GetGroupsByTelegramUserIdAsync(long telegramUserId)
         {
-            var groups = await _repository.GetListByTelegramUserIdAsync(telegramUserId);
+            var groups = await _groupRepository.GetListByTelegramUserIdAsync(telegramUserId);
             return _mapper.Map<ICollection<GroupDTO>>(groups);
         }
 
         public async Task RemoveGroupAsync(RemoveGroupDTO dto)
         {
-            await _repository.RemoveByNameAsync(dto.Name, dto.TelegramUserId);
+            await _groupRepository.RemoveByNameAsync(dto.Name, dto.TelegramUserId);
         }
     }
 }

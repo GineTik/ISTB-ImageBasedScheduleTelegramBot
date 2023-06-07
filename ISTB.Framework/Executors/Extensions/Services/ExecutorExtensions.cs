@@ -16,6 +16,8 @@ namespace ISTB.Framework.Executors.Extensions.Services
             new List<Assembly>() { Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly() };
 
         public Type ParametersParserType { get; set; } = typeof(ExecutorParametersParser);
+
+        public Type BotCommandFactoryType { get; set; } = typeof(ExecutorBotCommandFactory);
     }
 
     public static class ExecutorExtensions
@@ -32,6 +34,7 @@ namespace ISTB.Framework.Executors.Extensions.Services
 
             services.AddTransient<IExecutorFactory, ExecutorFactory>();
             services.AddTransient<ICommandStorage, ExecutorCommandStorage>();
+            services.AddTransient(typeof(IBotCommandFactory), configuration.BotCommandFactoryType);
             services.AddTransient(typeof(IExecutorParametersParser), configuration.ParametersParserType);
             services.AddSingleton<ITargetMethodStorage>(methodStorage);
 
@@ -49,15 +52,20 @@ namespace ISTB.Framework.Executors.Extensions.Services
             ArgumentNullException.ThrowIfNull(configuration.Assemblies);
             ArgumentNullException.ThrowIfNull(configuration.ParametersParserType);
 
-            var baseParser = typeof(IExecutorParametersParser);
-            if (configuration.ParametersParserType.IsInterface ||
-                configuration.ParametersParserType.IsAbstract ||
-                baseParser.IsAssignableFrom(configuration.ParametersParserType) == false)
-            {
+            if (typeFit<IExecutorParametersParser>(configuration.ParametersParserType) == false)
                 throw new ArgumentException($"{configuration.ParametersParserType.Name} is invalid");
-            }
+            
+            if (typeFit<IBotCommandFactory>(configuration.BotCommandFactoryType) == false)
+                throw new ArgumentException($"{configuration.BotCommandFactoryType.Name} is invalid");
 
             return configuration;
+        }
+
+        private static bool typeFit<TBase>(Type type)
+        {
+            return type.IsInterface == false ||
+                   type.IsAbstract == false ||
+                   typeof(TBase).IsAssignableFrom(type);
         }
     }
 }

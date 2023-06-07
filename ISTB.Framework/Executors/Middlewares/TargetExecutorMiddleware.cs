@@ -1,5 +1,6 @@
 ﻿using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.BotApplication.Delegates;
+using ISTB.Framework.BotApplication.Middlewares;
 using ISTB.Framework.CreationalClasses.Factories.Interfaces;
 using ISTB.Framework.Executors.Storages.Interfaces;
 using ISTB.Framework.Parsers.Interfaces;
@@ -36,7 +37,7 @@ namespace ISTB.Framework.Executors.Middlewares
             var executorType = methodInfo.DeclaringType ??
                 throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType");
             
-            var executor = _executorFactory.CreateExecutor(executorType, updateContext);
+            var executor = _executorFactory.CreateExecutor(executorType);
             await (Task)methodInfo.Invoke(executor, parameters);
         }
     }
