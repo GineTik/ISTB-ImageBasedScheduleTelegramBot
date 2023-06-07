@@ -5,7 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
+using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace ISTB.Framework.BotApplication
 {
@@ -15,8 +17,9 @@ namespace ISTB.Framework.BotApplication
 
         private readonly ICollection<Func<NextDelegate, NextDelegate>> _middlewares;
         private readonly IServiceCollection _services;
-        private IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
+        private readonly ReceiverOptions _receiverOptions;
+        private IServiceProvider _serviceProvider;
         private UpdateContext _currentUpdateContext;
 
         public BotApplication(BotApplicationBuilder builder)
@@ -24,6 +27,7 @@ namespace ISTB.Framework.BotApplication
             _middlewares = new List<Func<NextDelegate, NextDelegate>>();
             _services = builder.Services;
             _configuration = builder.Configuration;
+            _receiverOptions = builder.ReceiverOptions;
 
             UseMiddleware<UpdateContextMiddleware>();
         }
@@ -43,7 +47,7 @@ namespace ISTB.Framework.BotApplication
         {
             _services.AddTransient<T>();
             _middlewares.Add(next =>
-                async () => await (_serviceProvider.GetService<T>()).InvokeAsync(_currentUpdateContext, next));
+                async () => await (_serviceProvider.GetRequiredService<T>()).InvokeAsync(_currentUpdateContext, next));
 
             return this;
         }
@@ -59,7 +63,7 @@ namespace ISTB.Framework.BotApplication
                 _firstMiddleware = middlwareFactory.Invoke(_firstMiddleware);
 
             var client = new TelegramBotClient(apiKey);
-            client.StartReceiving(invokeMiddlewares, handlePollingErrorAsync);
+            client.StartReceiving(invokeMiddlewares, handlePollingErrorAsync, _receiverOptions);
         }
 
         private async Task invokeMiddlewares(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)

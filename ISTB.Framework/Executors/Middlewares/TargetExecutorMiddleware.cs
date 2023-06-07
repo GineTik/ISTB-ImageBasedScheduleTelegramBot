@@ -23,7 +23,7 @@ namespace ISTB.Framework.Executors.Middlewares
 
         public async Task InvokeAsync(UpdateContext updateContext, NextDelegate next)
         {
-            var methodInfo = _methodStorage.GetMethodInfoByUpdate(updateContext.Update);
+            var methodInfo = _methodStorage.GetMethodInfoToExecute(updateContext.Update);
 
             if (methodInfo == null)
             {
@@ -31,10 +31,10 @@ namespace ISTB.Framework.Executors.Middlewares
                 return;
             }
 
-            var text = updateContext.Update.Message?.Text ?? updateContext.Update.CallbackQuery?.Data ?? "";
+            var text = updateContext.Update.Message?.Text ?? "";
             var parameters = _parameterParser.Parse(text, methodInfo.GetParameters());
-
-            var executorType = methodInfo.DeclaringType ??
+            
+            var executorType = methodInfo.DeclaringType ?? methodInfo.ReflectedType ??
                 throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType");
             
             var executor = _executorFactory.CreateExecutor(executorType);

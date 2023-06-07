@@ -16,8 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Attributes\ValidateInputDataAttributes\" />
-    <Folder Include="Storages\Implementations\" />
-    <Folder Include="Storages\Interfaces\" />
+    <Folder Include="CreationalClasses\Builders\" />
   </ItemGroup>
 
 </Project>

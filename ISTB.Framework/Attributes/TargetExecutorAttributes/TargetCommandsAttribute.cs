@@ -10,7 +10,7 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 
         public TargetCommandsAttribute(string commands)
         {
-            Commands = commands.Replace(" ", "").Split(",");
+            Commands = commands.Replace(" ", "").Split(',');
         }
 
         public override bool IsTarget(Update update)
@@ -18,8 +18,8 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
             if (update?.Message?.Text is not { } text)
                 return false;
 
-            var command = text.Split(' ').FirstOrDefault();
-            return Commands.Any(c => '/' + c == command);
+            var command = text.Split(' ').First();
+            return Commands.Contains(command.TrimStart('/'));
         }
     }
 }
