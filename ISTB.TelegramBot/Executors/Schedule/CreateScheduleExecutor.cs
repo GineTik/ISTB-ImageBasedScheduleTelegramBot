@@ -1,5 +1,6 @@
 ﻿using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.BusinessLogic.Services.Interfaces;
+using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.Executors;
@@ -16,6 +17,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCommands("create_schedule, cs")]
+        [ParametersSeparator("")]
         public async Task CreateCommand(string groupName)
         {
             var schedule = await _service.CreateAsync(new CreateScheduleDTO

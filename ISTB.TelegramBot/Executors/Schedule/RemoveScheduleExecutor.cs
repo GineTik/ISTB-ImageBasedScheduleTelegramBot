@@ -1,5 +1,6 @@
 ﻿using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.BusinessLogic.Services.Interfaces;
+using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
 using ISTB.TelegramBot.Enum.Buttons;
@@ -17,6 +18,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCommands("remove_schedule, rms")]
+        [ParametersSeparator("")]
         public async Task RemoveGroupCommand(string scheduleName)
         {
             var schedule = await _service.GetByNameAsync(new GetScheduleByNameDTO

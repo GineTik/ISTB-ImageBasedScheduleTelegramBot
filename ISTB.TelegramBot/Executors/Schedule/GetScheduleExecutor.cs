@@ -17,13 +17,13 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCommands("schedules")]
-        public async Task GetMyCommand()
+        public async Task GetMyScheduleCommand()
         {
             var buttons = await getMySchedulesAsButtonsAsync();
 
             var title = buttons.Count() switch
             {
-                0 => "Ви ще не створили розкладу",
+                0 => "Ви ще не створили розклад",
                 _ => "Ваші розклади"
             };
 
@@ -34,7 +34,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.SelectSchedule))]
-        public async Task SelectButton(int groupId)
+        public async Task SelectScheduleButton(int groupId)
         {
             var schedule = await _service.GetByIdAsync(groupId);
             await Client.AnswerCurrentCallbackQueryAsync();
@@ -60,7 +60,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.BackToMySchedules))]
-        public async Task BackToMyButton()
+        public async Task BackToMySchedulesButton()
         {
             var buttons = await getMySchedulesAsButtonsAsync();
 

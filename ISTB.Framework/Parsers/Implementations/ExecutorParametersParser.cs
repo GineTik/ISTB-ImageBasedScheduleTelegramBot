@@ -6,14 +6,14 @@ namespace ISTB.Framework.Parsers.Implementations
 {
     public class ExecutorParametersParser : IExecutorParametersParser
     {
-        public object?[] Parse(string text, ParameterInfo[] ParametersInfo)
+        public object?[] Parse(string text, ParameterInfo[] ParametersInfo, string parameterSeparator)
         {
-            var args = Regex.Replace(text ?? "", "^/*\\w+\\s*", "");
+            string args = Regex.Replace(text ?? "", "^/*\\w+\\s*", "");
 
             if (String.IsNullOrEmpty(args))
                 return new object[0];
 
-            var stringParametersStack = new Stack<string>(args.Split(" "));
+            var stringParametersStack = new Stack<string>(args.Split(parameterSeparator));
             var resultParameters = new List<object?>();
             var nullParametersCount = ParametersInfo.Length - stringParametersStack.Count;
 
