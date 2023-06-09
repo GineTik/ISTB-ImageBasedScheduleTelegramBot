@@ -1,8 +1,8 @@
 ﻿namespace ISTB.BusinessLogic.DTOs.Group
 {
-    public class GroupDTO
+    public class GetGroupByNameDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
+        public long TelegramUserId { get; set; }
     }
 }

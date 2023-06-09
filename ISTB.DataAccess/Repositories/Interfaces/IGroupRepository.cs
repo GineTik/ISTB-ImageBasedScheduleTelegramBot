@@ -8,5 +8,6 @@ namespace ISTB.DataAccess.Repositories.Interfaces
         Task<Group?> GetByNameAsync(string name, long telegramUserId);
         Task RemoveByNameAsync(string name, long telegramUserId);
         Task ChangeGroupNameAsync(string oldName, string newName, long telegramUserId);
+        Task<bool> GroupByIdBelongsToUserAsync(int id, long telegramUserId);
     }
 }

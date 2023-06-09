@@ -44,6 +44,17 @@ namespace ISTB.BusinessLogic.Services.Implementations
             return _mapper.Map<GroupDTO>(group);
         }
 
+        public async Task<GroupDTO?> GetGroupByIdAsync(int id)
+        {
+            return _mapper.Map<GroupDTO>(await _groupRepository.GetByIdAsync(id));
+        }
+
+        public async Task<GroupDTO?> GetGroupByNameAsync(GetGroupByNameDTO dto)
+        {
+            var group = await _groupRepository.GetByNameAsync(dto.Name, dto.TelegramUserId);
+            return _mapper.Map<GroupDTO>(group);
+        }
+
         public async Task<ICollection<GroupDTO>> GetGroupsByTelegramUserIdAsync(long telegramUserId)
         {
             var groups = await _groupRepository.GetListByTelegramUserIdAsync(telegramUserId);
@@ -53,6 +64,14 @@ namespace ISTB.BusinessLogic.Services.Implementations
         public async Task RemoveGroupAsync(RemoveGroupDTO dto)
         {
             await _groupRepository.RemoveByNameAsync(dto.Name, dto.TelegramUserId);
+        }
+
+        public async Task RemoveGroupByIdAsync(RemoveGroupByIdDTO dto)
+        {
+            if (await _groupRepository.GroupByIdBelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
+                throw new InvalidOperationException($"Group not belongs to this user (id {dto.TelegramUserId})");
+            
+            await _groupRepository.RemoveById(dto.Id);
         }
     }
 }

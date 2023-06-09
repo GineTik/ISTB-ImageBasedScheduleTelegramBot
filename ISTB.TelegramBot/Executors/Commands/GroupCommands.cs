@@ -2,6 +2,8 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
+using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ISTB.TelegramBot.Executors.Commands
 {
@@ -28,23 +30,110 @@ namespace ISTB.TelegramBot.Executors.Commands
         [TargetCommands("remove_group, rmg")]
         public async Task RemoveGroup(string groupName)
         {
-            await _service.RemoveGroupAsync(new RemoveGroupDTO
+            var group = await _service.GetGroupByNameAsync(new GetGroupByNameDTO
             {
                 Name = groupName,
                 TelegramUserId = UpdateContext.TelegramUserId
             });
-            await SendTextAsync("Група видалена");
+
+            if (group == null)
+            {
+                await UpdateContext.Client.SendTextMessageAsync(
+                    UpdateContext.ChatId,
+                    "Такої групи не існує або ви не є її власником"
+                );
+            }
+            else
+            {
+                await UpdateContext.Client.SendTextMessageAsync(
+                    UpdateContext.ChatId,
+                    "Ви впевнені?",
+                    replyMarkup: new InlineKeyboardMarkup(new[] {
+                        InlineKeyboardButton.WithCallbackData("Так", "confirm_remove_group " + group.Id),
+                        InlineKeyboardButton.WithCallbackData("Ні", "remove_callbackquery_message")
+                    })
+                );
+            }
         }
 
-        [TargetCommands("get_my_groups, gmg")]
+        [TargetCallbacksDatas("confirm_remove_group")]
+        public async Task ConfirmRemoveGroup(int groupId)
+        {
+            await _service.RemoveGroupByIdAsync(new RemoveGroupByIdDTO()
+            {
+                Id = groupId,
+                TelegramUserId = UpdateContext.TelegramUserId
+            });
+            await RemoveCallbackQueryMessage();
+            await SendTextAsync($"Група видалена");
+        }
+
+        [TargetCallbacksDatas("remove_callbackquery_message")]
+        public async Task RemoveCallbackQueryMessage()
+        {
+            await UpdateContext.Client.AnswerCallbackQueryAsync(
+                UpdateContext.Update.CallbackQuery.Id
+            );
+
+            await UpdateContext.Client.DeleteMessageAsync(
+                UpdateContext.ChatId,
+                UpdateContext.Update.CallbackQuery.Message.MessageId
+            );
+        }
+
+        [TargetCommands("groups, g")]
         public async Task GetMyGroups()
         {
             var groups = await _service.GetGroupsByTelegramUserIdAsync(UpdateContext.TelegramUserId);
 
             if (groups.Count() == 0)
+            {
                 await SendTextAsync("Ви ще не створили групу");
+            }
             else
-                await SendTextAsync(String.Join("\n", groups.Select(g => g.Name)));
+            {
+                var buttons = groups.Select(group => 
+                    new[] { InlineKeyboardButton.WithCallbackData(group.Name, $"print_group {group.Id}") }
+                );
+                await UpdateContext.Client.SendTextMessageAsync(
+                    UpdateContext.ChatId,
+                    "Ваші групи",
+                    replyMarkup: new InlineKeyboardMarkup(buttons)
+                );
+            }
+        }
+
+        [TargetCallbacksDatas("print_group")]
+        public async Task PrintGroup(int groupId)
+        {
+            var group = await _service.GetGroupByIdAsync(groupId);
+
+            await UpdateContext.Client.AnswerCallbackQueryAsync(
+                UpdateContext.Update.CallbackQuery.Id
+            );
+
+            if (group == null)
+            {
+                var messageKeyboard = UpdateContext.Update.CallbackQuery.Message.ReplyMarkup.InlineKeyboard;
+                var callbackData = UpdateContext.Update.CallbackQuery.Data;
+                var messageId = UpdateContext.Update.CallbackQuery.Message.MessageId;
+
+                var newKeyboard = messageKeyboard
+                    .Select(row => row.SkipWhile(button => button.CallbackData == callbackData));
+
+                await UpdateContext.Client.EditMessageReplyMarkupAsync(
+                    UpdateContext.ChatId,
+                    messageId,
+                    replyMarkup: new InlineKeyboardMarkup(newKeyboard)
+                );
+            }
+            else
+            {
+                await UpdateContext.Client.SendTextMessageAsync(
+                    UpdateContext.ChatId,
+                    group.Name
+                );
+            }
         }
 
         [TargetCommands("change_gname, chgn", Description = "Змінити назву групи")]

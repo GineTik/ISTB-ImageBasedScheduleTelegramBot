@@ -4,6 +4,6 @@ namespace ISTB.Framework.Parsers.Interfaces
 {
     public interface IExecutorParametersParser
     {
-        public object?[]? Parse(string text, ParameterInfo[] ParametersInfo);
+        public object?[] Parse(string text, ParameterInfo[] ParametersInfo);
     }
 }
