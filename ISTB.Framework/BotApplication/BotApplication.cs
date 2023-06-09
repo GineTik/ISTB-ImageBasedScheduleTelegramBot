@@ -1,6 +1,7 @@
 ﻿using ISTB.Framework.BotApplication.Context;
 using ISTB.Framework.BotApplication.Delegates;
 using ISTB.Framework.BotApplication.Middlewares;
+using ISTB.Framework.BotApplication.TelegramBotClientInheritors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -72,7 +73,7 @@ namespace ISTB.Framework.BotApplication
             _currentUpdateContext = new UpdateContext();
             _currentUpdateContext.Update = update;
             _currentUpdateContext.CancellationToken = cancellationToken;
-            _currentUpdateContext.Client = new AdvancedTelegramClientBot(_apiKey, _currentUpdateContext);
+            _currentUpdateContext.Client = new AdvancedTelegramBotClient(_apiKey, _currentUpdateContext);
 
             await _firstMiddleware.Invoke();
         }

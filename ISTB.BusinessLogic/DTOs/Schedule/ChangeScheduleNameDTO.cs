@@ -1,6 +1,6 @@
-﻿namespace ISTB.BusinessLogic.DTOs.Group
+﻿namespace ISTB.BusinessLogic.DTOs.Schedule
 {
-    public class ChangeGroupNameDTO
+    public class ChangeScheduleNameDTO
     {
         public string OldName { get; set; }
         public string NewName { get; set; }

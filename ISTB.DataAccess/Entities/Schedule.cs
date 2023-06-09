@@ -5,8 +5,10 @@ namespace ISTB.DataAccess.Entities
     public class Schedule : Entity
     {
         [Required]
-        public uint Position { get; set; }
+        public string Name { get; set; }
 
-        public ICollection<ScheduleDay> Days { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
+        public ICollection<ScheduleWeek> Weeks { get; set; }
     }
 }

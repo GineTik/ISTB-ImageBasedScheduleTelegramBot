@@ -2,6 +2,7 @@
 {
     public class ScheduleDTO
     {
-        public uint Position { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

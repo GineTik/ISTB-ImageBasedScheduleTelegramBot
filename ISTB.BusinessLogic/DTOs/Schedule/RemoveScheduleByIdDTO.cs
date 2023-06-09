@@ -1,6 +1,6 @@
-﻿namespace ISTB.BusinessLogic.DTOs.Group
+﻿namespace ISTB.BusinessLogic.DTOs.Schedule
 {
-    public class RemoveGroupByIdDTO
+    public class RemoveScheduleByIdDTO
     {
         public int Id { get; set; }
         public long TelegramUserId { get; set; }
