@@ -1,4 +1,5 @@
 ﻿using ISTB.Framework.Attributes.BaseAttributes;
+using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
@@ -18,8 +19,10 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
             if (update?.Message?.Text is not { } text)
                 return false;
 
-            var command = text.Split(' ').First();
-            return Commands.Contains(command.TrimStart('/'));
+            var command = text.Split(' ').First().TrimStart('/');
+            command = Regex.Replace(command, "@\\w+", ""); // remove bot username
+
+            return Commands.Contains(command);
         }
     }
 }

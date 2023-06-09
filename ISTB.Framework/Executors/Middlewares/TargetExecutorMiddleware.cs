@@ -40,7 +40,7 @@ namespace ISTB.Framework.Executors.Middlewares
             var executorType = 
                 methodInfo.DeclaringType ?? 
                 methodInfo.ReflectedType ??
-                throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType");
+                throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType and ReflectedType");
 
             var executor = _executorFactory.CreateExecutor(executorType);
             await (Task)methodInfo.Invoke(executor, parameters);
