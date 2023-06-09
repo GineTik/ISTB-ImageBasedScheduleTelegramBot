@@ -18,7 +18,8 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
             if (update?.CallbackQuery?.Data is not { } data)
                 return false;
 
-            return CallbacksDatas.Contains(data);
+            var targetData = data.Split(' ').First();
+            return CallbacksDatas.Contains(targetData);
         }
     }
 }

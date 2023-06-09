@@ -1,7 +1,5 @@
 ﻿using ISTB.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
-using System;
 
 namespace ISTB.DataAccess.EF
 {
@@ -9,9 +7,9 @@ namespace ISTB.DataAccess.EF
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Group> Groups { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<ScheduleDay> ScheduleDays { get; set; }
+        public DbSet<Schedule> Schedule { get; set; }
+        public DbSet<ScheduleWeek> SchedulesWeeks { get; set; }
+        public DbSet<ScheduleDay> SchedulesDays { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 

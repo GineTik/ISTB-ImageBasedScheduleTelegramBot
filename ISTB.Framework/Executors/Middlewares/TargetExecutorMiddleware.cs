@@ -31,7 +31,7 @@ namespace ISTB.Framework.Executors.Middlewares
                 return;
             }
 
-            var text = updateContext.Update.Message?.Text ?? "";
+            var text = updateContext.Update.Message?.Text ?? updateContext.Update.CallbackQuery?.Data ?? "";
             var parameters = _parameterParser.Parse(text, methodInfo.GetParameters());
             
             var executorType = methodInfo.DeclaringType ?? methodInfo.ReflectedType ??

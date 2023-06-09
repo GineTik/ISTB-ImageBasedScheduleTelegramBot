@@ -8,6 +8,6 @@ namespace ISTB.DataAccess.Entities
         public long TelegramUserId { get; set; }
 
         public ICollection<Role> Roles { get; set; }
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<Schedule> Groups { get; set; }
     }
 }

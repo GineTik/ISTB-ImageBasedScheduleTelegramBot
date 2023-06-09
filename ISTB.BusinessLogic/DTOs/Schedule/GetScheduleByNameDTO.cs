@@ -1,8 +1,8 @@
 ﻿namespace ISTB.BusinessLogic.DTOs.Schedule
 {
-    public class ScheduleDTO
+    public class GetScheduleByNameDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
+        public long TelegramUserId { get; set; }
     }
 }
