@@ -1,12 +1,13 @@
-﻿using Telegram.Bot;
+﻿using ISTB.Framework.BotApplication.TelegramBotClientInheritors;
 using Telegram.Bot.Types;
 
 namespace ISTB.Framework.BotApplication.Context
 {
     public class UpdateContext
     {
-        public ITelegramBotClient Client { get; set; }
+        public IAdvancedTelegramBotClient Client { get; set; }
         public Update Update { get; set; }
+        public CancellationToken CancellationToken { get; set; }
 
         public long ChatId => Update.Message?.Chat?.Id ??
                               Update.CallbackQuery?.Message?.Chat?.Id ??
