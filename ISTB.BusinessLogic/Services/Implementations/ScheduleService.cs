@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ISTB.BusinessLogic.DTOs.Schedule;
+using ISTB.BusinessLogic.DTOs.ScheduleWeek;
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.DataAccess.Entities;
 using ISTB.DataAccess.Repositories.Interfaces;
@@ -9,14 +10,16 @@ namespace ISTB.BusinessLogic.Services.Implementations
     public class ScheduleService : IScheduleService
     {
         private readonly IScheduleRepository _scheduleRepository;
+        private readonly IScheduleWeekRepository _scheduleWeekRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public ScheduleService(IScheduleRepository repository, IMapper mapper, IUserRepository userRepository)
+        public ScheduleService(IScheduleRepository repository, IMapper mapper, IUserRepository userRepository, IScheduleWeekRepository scheduleWeekRepository)
         {
             _scheduleRepository = repository;
             _mapper = mapper;
             _userRepository = userRepository;
+            _scheduleWeekRepository = scheduleWeekRepository;
         }
 
         public Task ChangeNameAsync(ChangeScheduleNameDTO dto)
@@ -44,9 +47,13 @@ namespace ISTB.BusinessLogic.Services.Implementations
             return _mapper.Map<ScheduleDTO>(schedule);
         }
 
-        public async Task<ScheduleDTO?> GetByIdAsync(int id)
+        public async Task<ScheduleDTO?> GetByIdAsync(GetScheduleByIdDTO dto)
         {
-            return _mapper.Map<ScheduleDTO>(await _scheduleRepository.GetByIdAsync(id));
+            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
+                return null;
+
+            var schedule = await _scheduleRepository.GetByIdAsync(dto.Id);
+            return _mapper.Map<ScheduleDTO>(schedule);
         }
 
         public async Task<ScheduleDTO?> GetByNameAsync(GetScheduleByNameDTO dto)
@@ -72,6 +79,35 @@ namespace ISTB.BusinessLogic.Services.Implementations
                 throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
             
             await _scheduleRepository.RemoveById(dto.Id);
+        }
+
+        public async Task<ScheduleWithWeeksDTO?> GetWithWeeksByIdAsync(GetScheduleByIdDTO dto)
+        {
+            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
+                throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
+
+            var schedule = await _scheduleRepository.GetByIdAsync(dto.Id);
+            if (schedule == null)
+                return null;
+
+            var weeks = await _scheduleWeekRepository.GetByScheduleIdAsync(dto.Id);
+            schedule.Weeks = weeks.ToList();
+
+            return _mapper.Map<ScheduleWithWeeksDTO>(schedule);
+        }
+
+        public async Task<ScheduleWeekDTO> CreateWeekAsync(CreateScheduleWeekDTO dto)
+        {
+            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.ScheduleId, dto.TelegramUserId) == false)
+                throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
+
+            var week = await _scheduleWeekRepository.AddAsync(new ScheduleWeek
+            {
+                Position = null,
+                ScheduleId = dto.ScheduleId,
+            });
+
+            return _mapper.Map<ScheduleWeekDTO>(week);
         }
     }
 }

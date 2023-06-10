@@ -17,8 +17,8 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCommands("create_schedule, cs")]
-        [ParametersSeparator("")]
-        public async Task CreateCommand(string groupName)
+        [ParametersSeparator(", ")]
+        public async Task Create(string groupName)
         {
             var schedule = await _service.CreateAsync(new CreateScheduleDTO
             {
