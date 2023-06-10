@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ISTB.Framework.Parsers.Interfaces
+namespace ISTB.Framework.Executors.Parsers.Interfaces
 {
     public interface IExecutorParametersParser
     {

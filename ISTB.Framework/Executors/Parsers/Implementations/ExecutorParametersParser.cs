@@ -1,8 +1,8 @@
-﻿using ISTB.Framework.Parsers.Interfaces;
+﻿using ISTB.Framework.Executors.Parsers.Interfaces;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace ISTB.Framework.Parsers.Implementations
+namespace ISTB.Framework.Executors.Parsers.Implementations
 {
     public class ExecutorParametersParser : IExecutorParametersParser
     {
@@ -10,7 +10,7 @@ namespace ISTB.Framework.Parsers.Implementations
         {
             string args = Regex.Replace(text ?? "", "^/*\\w+\\s*", "");
 
-            if (String.IsNullOrEmpty(args))
+            if (string.IsNullOrEmpty(args))
                 return new object[0];
 
             var stringParametersStack = new Stack<string>(args.Split(parameterSeparator));

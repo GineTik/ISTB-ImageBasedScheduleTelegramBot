@@ -9,7 +9,7 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
     public class TargetCommandsAttribute : TargetAttribute
     {
         public string[] Commands { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public TargetCommandsAttribute(string commands)
         {

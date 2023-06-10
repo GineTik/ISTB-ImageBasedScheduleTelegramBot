@@ -1,9 +1,9 @@
 ﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
-using ISTB.Framework.CreationalClasses.Factories.Interfaces;
+using ISTB.Framework.Executors.Factories.Interfaces;
 using System.Reflection;
 using Telegram.Bot.Types;
 
-namespace ISTB.Framework.CreationalClasses.Factories.Implementations
+namespace ISTB.Framework.Executors.Factories.Implementations
 {
     public class ExecutorBotCommandFactory : IBotCommandFactory
     {
@@ -24,13 +24,13 @@ namespace ISTB.Framework.CreationalClasses.Factories.Implementations
         private string getSecondCommands(IEnumerable<string> commands)
         {
             if (commands.Count() > 1)
-                return $"({String.Join(", ", commands.Skip(1).Select(c => "/" + c))})";
+                return $"({string.Join(", ", commands.Skip(1).Select(c => "/" + c))})";
             return "";
         }
 
         private string getParameters(MethodInfo method)
         {
-            return String.Join("> <", method.GetParameters().Select(param => param.Name));
+            return string.Join("> <", method.GetParameters().Select(param => param.Name));
         }
     }
 }
