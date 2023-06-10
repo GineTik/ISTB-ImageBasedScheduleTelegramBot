@@ -1,10 +1,11 @@
 ﻿using ISTB.Framework.Attributes.BaseAttributes;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class TargetCallbacksDatasAttribute : TargetExecutorAttribute
+    [TargetUpdateType(UpdateType.CallbackQuery)]
+    public class TargetCallbacksDatasAttribute : TargetAttribute
     {
         public string[] CallbacksDatas { get; set; }
 
@@ -15,7 +16,7 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 
         public override bool IsTarget(Update update)
         {
-            if (update?.CallbackQuery?.Data is not { } data)
+            if (update.CallbackQuery!.Data is not { } data)
                 return false;
 
             var targetData = data.Split(' ').First();

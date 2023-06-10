@@ -1,9 +1,9 @@
 ﻿using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.CreationalClasses.Factories.Interfaces;
 using ISTB.Framework.Executors;
+using ISTB.Framework.Executors.Factories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISTB.Framework.CreationalClasses.Factories.Implementations
+namespace ISTB.Framework.Executors.Factories.Implementations
 {
     public class ExecutorFactory : IExecutorFactory
     {

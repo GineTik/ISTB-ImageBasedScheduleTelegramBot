@@ -2,7 +2,7 @@
 using System.Reflection;
 using Telegram.Bot.Types;
 
-namespace ISTB.Framework.CreationalClasses.Factories.Interfaces
+namespace ISTB.Framework.Executors.Factories.Interfaces
 {
     public interface IBotCommandFactory
     {
