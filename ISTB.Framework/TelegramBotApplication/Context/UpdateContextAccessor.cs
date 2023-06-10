@@ -1,4 +1,4 @@
-﻿namespace ISTB.Framework.BotApplication.Context
+﻿namespace ISTB.Framework.TelegramBotApplication.Context
 {
     public class UpdateContextAccessor
     {

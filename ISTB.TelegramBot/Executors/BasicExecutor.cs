@@ -1,6 +1,6 @@
 ﻿using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
-using ISTB.Framework.BotApplication.Storages.Interfaces;
+using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
 using ISTB.Framework.Executors;
 using Telegram.Bot;
 

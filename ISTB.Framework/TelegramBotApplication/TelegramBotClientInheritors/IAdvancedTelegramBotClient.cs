@@ -3,7 +3,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace ISTB.Framework.BotApplication.TelegramBotClientInheritors
+namespace ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors
 {
     public interface IAdvancedTelegramBotClient : ITelegramBotClient
     {

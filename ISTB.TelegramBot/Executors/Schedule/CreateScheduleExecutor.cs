@@ -2,7 +2,7 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
-using ISTB.Framework.BotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.Framework.Executors;
 
 namespace ISTB.TelegramBot.Executors.Schedule

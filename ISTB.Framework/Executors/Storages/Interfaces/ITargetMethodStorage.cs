@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.BotApplication.Context;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
 using System.Reflection;
 using Telegram.Bot.Types;
 

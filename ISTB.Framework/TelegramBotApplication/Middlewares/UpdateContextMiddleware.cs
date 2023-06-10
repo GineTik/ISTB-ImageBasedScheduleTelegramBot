@@ -1,7 +1,7 @@
-﻿using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.BotApplication.Delegates;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Delegates;
 
-namespace ISTB.Framework.BotApplication.Middlewares
+namespace ISTB.Framework.TelegramBotApplication.Middlewares
 {
     public class UpdateContextMiddleware : IMiddleware
     {

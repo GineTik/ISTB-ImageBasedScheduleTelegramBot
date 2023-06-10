@@ -1,7 +1,7 @@
-﻿using ISTB.Framework.BotApplication.TelegramBotClientInheritors;
+﻿using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
 using Telegram.Bot.Types;
 
-namespace ISTB.Framework.BotApplication.Context
+namespace ISTB.Framework.TelegramBotApplication.Context
 {
     public class UpdateContext
     {

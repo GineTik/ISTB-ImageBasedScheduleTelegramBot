@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.BotApplication.Context;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.Framework.Executors;
 using ISTB.Framework.Executors.Factories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;

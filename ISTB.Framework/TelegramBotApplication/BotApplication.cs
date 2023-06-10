@@ -1,7 +1,7 @@
-﻿using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.BotApplication.Delegates;
-using ISTB.Framework.BotApplication.Middlewares;
-using ISTB.Framework.BotApplication.TelegramBotClientInheritors;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Delegates;
+using ISTB.Framework.TelegramBotApplication.Middlewares;
+using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -10,7 +10,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace ISTB.Framework.BotApplication
+namespace ISTB.Framework.TelegramBotApplication
 {
     public class BotApplication
     {
@@ -40,6 +40,16 @@ namespace ISTB.Framework.BotApplication
 
             _middlewares.Add(next =>
                 async () => await middlware(_currentUpdateContext, next));
+
+            return this;
+        }
+
+        public BotApplication Use(Func<IServiceProvider, UpdateContext, NextDelegate, Task> middlware)
+        {
+            ArgumentNullException.ThrowIfNull(middlware);
+
+            _middlewares.Add(next =>
+                async () => await middlware(_serviceProvider, _currentUpdateContext, next));
 
             return this;
         }

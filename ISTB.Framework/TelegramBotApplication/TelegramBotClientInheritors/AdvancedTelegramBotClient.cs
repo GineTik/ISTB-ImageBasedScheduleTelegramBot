@@ -1,10 +1,10 @@
-﻿using ISTB.Framework.BotApplication.Context;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace ISTB.Framework.BotApplication.TelegramBotClientInheritors
+namespace ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors
 {
     public class AdvancedTelegramBotClient : TelegramBotClient, IAdvancedTelegramBotClient
     {
