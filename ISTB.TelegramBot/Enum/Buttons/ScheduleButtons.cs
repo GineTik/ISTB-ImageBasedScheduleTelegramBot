@@ -5,6 +5,9 @@
         SelectSchedule,
         BackToMySchedules,
         ConfirmRemoveSchedule,
-        RemoveCallbackQueryMessage,
+        FailtureRemoveSchedule,
+        RemoveSchedule,
+        SelectScheduleWeek,
+        CreateScheduleWeek,
     }
 }

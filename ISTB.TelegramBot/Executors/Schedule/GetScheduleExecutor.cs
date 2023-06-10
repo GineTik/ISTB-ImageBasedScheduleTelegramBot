@@ -4,6 +4,8 @@ using ISTB.Framework.Executors;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot;
 using ISTB.TelegramBot.Enum.Buttons;
+using ISTB.BusinessLogic.DTOs.Schedule;
+using ISTB.TelegramBot.Helpers;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
@@ -19,7 +21,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         [TargetCommands("schedules")]
         public async Task GetMyScheduleCommand()
         {
-            var buttons = await getMySchedulesAsButtonsAsync();
+            var buttons = await ScheduleHelper.GetMySchedulesAsButtonsAsync(_service, UpdateContext.TelegramUserId);
 
             var title = buttons.Count() switch
             {
@@ -34,55 +36,32 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.SelectSchedule))]
-        public async Task SelectScheduleButton(int groupId)
+        public async Task SelectScheduleButton(int scheduleId)
         {
-            var schedule = await _service.GetByIdAsync(groupId);
+            var schedule = await _service.GetByIdAsync(new GetScheduleByIdDTO
+            {
+                Id = scheduleId,
+                TelegramUserId = UpdateContext.TelegramUserId
+            });
             await Client.AnswerCurrentCallbackQueryAsync();
 
             if (schedule == null)
             {
                 await Client.DeleteButtonWithCallbacksDatas(
                     UpdateContext.Update.CallbackQuery.Message,
-                    $"{nameof(ScheduleButtons.SelectSchedule)} {groupId}"
+                    $"{nameof(ScheduleButtons.SelectSchedule)} {scheduleId}"
                 );
             }
             else
             {
-                await Client.EditMessageTextAsync(
-                    UpdateContext.ChatId,
-                    UpdateContext.Update.CallbackQuery.Message.MessageId,
-                    "Назва групи: " + schedule.Name,
-                    replyMarkup: new InlineKeyboardMarkup(
-                        InlineKeyboardButton.WithCallbackData("<<< Назад", nameof(ScheduleButtons.BackToMySchedules))
-                    )
-                );
+                await ScheduleHelper.EditScheduleInfoMessageAsync(_service, UpdateContext, schedule.Id);                
             }
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.BackToMySchedules))]
         public async Task BackToMySchedulesButton()
         {
-            var buttons = await getMySchedulesAsButtonsAsync();
-
-            await Client.EditMessageTextAsync(
-                UpdateContext.ChatId,
-                UpdateContext.Update.CallbackQuery.Message.MessageId,
-                "Ваші групи",
-                replyMarkup: new InlineKeyboardMarkup(buttons)
-            );
-        }
-
-        private async Task<IEnumerable<IEnumerable<InlineKeyboardButton>>> getMySchedulesAsButtonsAsync()
-        {
-            var schedules = await _service.GetListByTelegramUserIdAsync(UpdateContext.TelegramUserId);
-
-            var buttons = schedules.Select(schedule => new[] { 
-                InlineKeyboardButton.WithCallbackData(
-                    schedule.Name,
-                    $"{nameof(ScheduleButtons.SelectSchedule)} {schedule.Id}")
-            });
-
-            return buttons;
+            await ScheduleHelper.EditYourSchedulesMessageAsync(_service, UpdateContext);
         }
     }
 }

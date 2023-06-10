@@ -19,7 +19,7 @@ namespace ISTB.TelegramBot
             builder.ReceiverOptions.ConfigureAllowedUpdates(UpdateType.Message, UpdateType.CallbackQuery);
             builder.Services.AddExecutors();
             builder.Services.AddData(builder.Configuration);
-            builder.Services.AddAutoMapper(typeof(GroupProfile));
+            builder.Services.AddAutoMapper(typeof(ScheduleProfile));
             builder.Services.AddServices();
 
             var app = builder.Build();
