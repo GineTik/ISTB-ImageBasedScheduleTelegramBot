@@ -1,10 +1,12 @@
 ﻿using ISTB.Framework.Attributes.BaseAttributes;
 using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
-    public class TargetCommandsAttribute : TargetExecutorAttribute
+    [TargetUpdateType(UpdateType.Message)]
+    public class TargetCommandsAttribute : TargetAttribute
     {
         public string[] Commands { get; set; }
         public string Description { get; set; }
@@ -16,7 +18,7 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 
         public override bool IsTarget(Update update)
         {
-            if (update?.Message?.Text is not { } text)
+            if (update.Message!.Text is not { } text)
                 return false;
 
             var command = text.Split(' ').First().TrimStart('/');
