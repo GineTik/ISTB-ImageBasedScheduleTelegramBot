@@ -1,5 +1,5 @@
-﻿using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.BotApplication.Storages.Interfaces;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
 using ISTB.Framework.Executors.Factories.Implementations;
 using ISTB.Framework.Executors.Factories.Interfaces;
 using ISTB.Framework.Executors.Parsers.Implementations;

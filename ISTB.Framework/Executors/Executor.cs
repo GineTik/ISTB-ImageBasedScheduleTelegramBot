@@ -1,5 +1,5 @@
-﻿using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.BotApplication.TelegramBotClientInheritors;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

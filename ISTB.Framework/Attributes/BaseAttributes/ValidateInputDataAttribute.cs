@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.BotApplication.Context;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
 
 namespace ISTB.Framework.Attributes.BaseAttributes
 {

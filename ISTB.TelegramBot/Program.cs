@@ -1,7 +1,7 @@
 ﻿using ISTB.BusinessLogic.AutoMapper.Profiles;
-using ISTB.Framework.BotApplication;
-using ISTB.Framework.BotApplication.Extensions.Middlwares;
-using ISTB.Framework.BotApplication.Extensions.ReceiverOption;
+using ISTB.Framework.TelegramBotApplication;
+using ISTB.Framework.TelegramBotApplication.Extensions.Middlwares;
+using ISTB.Framework.TelegramBotApplication.Extensions.ReceiverOption;
 using ISTB.Framework.Executors.Extensions.Middlewares;
 using ISTB.Framework.Executors.Extensions.Services;
 using ISTB.TelegramBot.Extensions.Services;
@@ -35,7 +35,7 @@ namespace ISTB.TelegramBot
             app.UseExecutors();
             app.Use(async (UpdateContext, _) => 
                 await UpdateContext.Client.SendTextResponseAsync("Мені нема чим тобі відповіти")
-            );
+            ); 
             app.Run();
 
             Console.ReadLine();

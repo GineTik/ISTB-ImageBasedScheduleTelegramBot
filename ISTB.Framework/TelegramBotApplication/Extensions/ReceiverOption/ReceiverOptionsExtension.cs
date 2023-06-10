@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 
-namespace ISTB.Framework.BotApplication.Extensions.ReceiverOption
+namespace ISTB.Framework.TelegramBotApplication.Extensions.ReceiverOption
 {
     public static class ReceiverOptionsExtensio
     {

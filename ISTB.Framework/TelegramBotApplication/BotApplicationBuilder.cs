@@ -1,10 +1,10 @@
-﻿using ISTB.Framework.BotApplication.Extensions.Services;
+﻿using ISTB.Framework.TelegramBotApplication.Extensions.Services;
 using ISTB.Framework.CreationalClasses.Factories.Implementations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Polling;
 
-namespace ISTB.Framework.BotApplication
+namespace ISTB.Framework.TelegramBotApplication
 {
     public class BotApplicationBuilder
     {

@@ -1,7 +1,6 @@
 ﻿using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.BusinessLogic.Services.Interfaces;
-using ISTB.DataAccess.Entities;
-using ISTB.Framework.BotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.TelegramBot.Enum.Buttons;
 using Telegram.Bot;
 using Telegram.Bot.Types.ReplyMarkups;

@@ -1,11 +1,10 @@
-﻿using ISTB.BusinessLogic.Services.Interfaces;
+﻿using ISTB.BusinessLogic.DTOs.Schedule;
+using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
-using Telegram.Bot.Types.ReplyMarkups;
-using Telegram.Bot;
 using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.TelegramBot.Helpers;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
@@ -20,7 +19,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
 
         [TargetCommands("schedules")]
         public async Task GetMyScheduleCommand()
-        {
+        {            
             var buttons = await ScheduleHelper.GetMySchedulesAsButtonsAsync(_service, UpdateContext.TelegramUserId);
 
             var title = buttons.Count() switch

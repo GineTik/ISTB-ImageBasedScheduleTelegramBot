@@ -1,7 +1,7 @@
-﻿using ISTB.Framework.BotApplication.Context;
+﻿using ISTB.Framework.TelegramBotApplication.Context;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISTB.Framework.BotApplication.Extensions.Services
+namespace ISTB.Framework.TelegramBotApplication.Extensions.Services
 {
     public static class UpdateContextExtension
     {

@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types;
 
-namespace ISTB.Framework.BotApplication.Storages.Interfaces
+namespace ISTB.Framework.TelegramBotApplication.Storages.Interfaces
 {
     public interface ICommandStorage
     {

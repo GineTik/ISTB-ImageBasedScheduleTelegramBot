@@ -1,7 +1,7 @@
 ﻿using ISTB.Framework.Attributes.ParametersParse;
-using ISTB.Framework.BotApplication.Context;
-using ISTB.Framework.BotApplication.Delegates;
-using ISTB.Framework.BotApplication.Middlewares;
+using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Delegates;
+using ISTB.Framework.TelegramBotApplication.Middlewares;
 using ISTB.Framework.Executors.Factories.Interfaces;
 using ISTB.Framework.Executors.Parsers.Interfaces;
 using ISTB.Framework.Executors.Storages.Interfaces;

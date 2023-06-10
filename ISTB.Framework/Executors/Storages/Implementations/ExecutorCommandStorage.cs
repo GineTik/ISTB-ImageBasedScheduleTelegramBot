@@ -1,5 +1,5 @@
 ﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
-using ISTB.Framework.BotApplication.Storages.Interfaces;
+using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
 using ISTB.Framework.Executors.Factories.Interfaces;
 using ISTB.Framework.Executors.Storages.Interfaces;
 using System.Reflection;
