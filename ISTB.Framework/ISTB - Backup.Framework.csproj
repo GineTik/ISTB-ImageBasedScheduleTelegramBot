@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -16,7 +16,8 @@
 
   <ItemGroup>
     <Folder Include="Attributes\ValidateInputDataAttributes\" />
-    <Folder Include="CreationalClasses\Builders\" />
+    <Folder Include="Storages\Implementations\" />
+    <Folder Include="Storages\Interfaces\" />
   </ItemGroup>
 
 </Project>
