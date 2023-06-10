@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ISTB.BusinessLogic.DTOs.Group;
+using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.DataAccess.Entities;
 
 namespace ISTB.BusinessLogic.AutoMapper.Profiles
@@ -8,7 +8,7 @@ namespace ISTB.BusinessLogic.AutoMapper.Profiles
     {
         public GroupProfile() : base()
         {
-            CreateMap<Group, GroupDTO>();
+            CreateMap<Schedule, ScheduleDTO>();
         }
     }
 }

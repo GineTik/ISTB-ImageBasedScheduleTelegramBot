@@ -9,7 +9,7 @@ namespace ISTB.TelegramBot.Extensions.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IScheduleService, ScheduleService>();
             return services;
         }
     }

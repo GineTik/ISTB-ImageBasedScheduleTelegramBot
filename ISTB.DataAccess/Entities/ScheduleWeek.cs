@@ -2,14 +2,11 @@
 
 namespace ISTB.DataAccess.Entities
 {
-    public class ScheduleDay : Entity
+    public class ScheduleWeek : Entity
     {
         [Required]
         public uint Position { get; set; }
 
-        public string Description { get; set; }
-
-        [Required]
-        public string ImageFileUrl { get; set; }
+        public ICollection<ScheduleDay> Days { get; set; }
     }
 }
