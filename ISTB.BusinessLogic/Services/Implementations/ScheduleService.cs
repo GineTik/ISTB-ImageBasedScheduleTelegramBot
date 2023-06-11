@@ -49,7 +49,7 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
         public async Task<ScheduleDTO?> GetByIdAsync(GetScheduleByIdDTO dto)
         {
-            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
+            if (await _scheduleRepository.BelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
                 return null;
 
             var schedule = await _scheduleRepository.GetByIdAsync(dto.Id);
@@ -75,7 +75,7 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
         public async Task RemoveByIdAsync(RemoveScheduleByIdDTO dto)
         {
-            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
+            if (await _scheduleRepository.BelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
                 throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
             
             await _scheduleRepository.RemoveById(dto.Id);
@@ -83,7 +83,7 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
         public async Task<ScheduleWithWeeksDTO?> GetWithWeeksByIdAsync(GetScheduleByIdDTO dto)
         {
-            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
+            if (await _scheduleRepository.BelongsToUserAsync(dto.Id, dto.TelegramUserId) == false)
                 throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
 
             var schedule = await _scheduleRepository.GetByIdAsync(dto.Id);
@@ -98,7 +98,7 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
         public async Task<ScheduleWeekDTO> CreateWeekAsync(CreateScheduleWeekDTO dto)
         {
-            if (await _scheduleRepository.ScheduleByIdBelongsToUserAsync(dto.ScheduleId, dto.TelegramUserId) == false)
+            if (await _scheduleRepository.BelongsToUserAsync(dto.ScheduleId, dto.TelegramUserId) == false)
                 throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
 
             var week = await _scheduleWeekRepository.AddAsync(new ScheduleWeek
@@ -107,6 +107,12 @@ namespace ISTB.BusinessLogic.Services.Implementations
                 ScheduleId = dto.ScheduleId,
             });
 
+            return _mapper.Map<ScheduleWeekDTO>(week);
+        }
+
+        public async Task<ScheduleWeekDTO?> GetWeekByIdAsync(int weekId)
+        {
+            var week = await _scheduleWeekRepository.GetByIdAsync(weekId);
             return _mapper.Map<ScheduleWeekDTO>(week);
         }
     }
