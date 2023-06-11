@@ -1,66 +1,57 @@
-﻿using ISTB.BusinessLogic.DTOs.Schedule;
-using ISTB.BusinessLogic.Services.Interfaces;
+﻿using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
+using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
+using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
 using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.Helpers;
-using Telegram.Bot.Types.ReplyMarkups;
+using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
     public class GetScheduleExecutor : Executor
     {
         private readonly IScheduleService _service;
+        private readonly SchedulePresets _presets;
 
-        public GetScheduleExecutor(IScheduleService service)
+        public GetScheduleExecutor(IScheduleService service, SchedulePresets presets)
         {
             _service = service;
+            _presets = presets;
         }
 
         [TargetCommands("schedules")]
-        public async Task GetMyScheduleCommand()
-        {            
-            var buttons = await ScheduleHelper.GetMySchedulesAsButtonsAsync(_service, UpdateContext.TelegramUserId);
-
-            var title = buttons.Count() switch
-            {
-                0 => "Ви ще не створили розклад",
-                _ => "Ваші розклади"
-            };
-
-            await Client.SendTextResponseAsync(
-                title,
-                replyMarkup: new InlineKeyboardMarkup(buttons)
-            );
+        public async Task GetMySchedule()
+        {
+            var preset = await _presets.GetSchedulesAsync();
+            await Client.SendMessageResponseAsync(preset);
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.SelectSchedule))]
-        public async Task SelectScheduleButton(int scheduleId)
+        public async Task SelectSchedule(int scheduleId)
         {
-            var schedule = await _service.GetByIdAsync(new GetScheduleByIdDTO
-            {
-                Id = scheduleId,
-                TelegramUserId = UpdateContext.TelegramUserId
-            });
-            await Client.AnswerCurrentCallbackQueryAsync();
+            await Client.AnswerCallbackQueryAsync();
+            var preset = await _presets.GetScheduleInfoAsync(scheduleId);
 
-            if (schedule == null)
+            if (preset == null)
             {
-                await Client.DeleteButtonWithCallbacksDatas(
-                    UpdateContext.Update.CallbackQuery.Message,
-                    $"{nameof(ScheduleButtons.SelectSchedule)} {scheduleId}"
-                );
+                // schedule with this id not exists
+                await Client.DeleteCurrentCallbackButtonAsync();
             }
             else
             {
-                await ScheduleHelper.EditScheduleInfoMessageAsync(_service, UpdateContext, schedule.Id);                
+                await Client.EditMessageResponseAsync(
+                    UpdateContext.Update.CallbackQuery!.Message!.MessageId, 
+                    preset
+                );
             }
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.BackToMySchedules))]
-        public async Task BackToMySchedulesButton()
+        public async Task BackToMySchedules()
         {
-            await ScheduleHelper.EditYourSchedulesMessageAsync(_service, UpdateContext);
+            var preset = await _presets.GetSchedulesAsync();
+            var messageId = UpdateContext.Update.CallbackQuery!.Message!.MessageId;
+            await Client.EditMessageResponseAsync(messageId, preset);
         }
     }
 }

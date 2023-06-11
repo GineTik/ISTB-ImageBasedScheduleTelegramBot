@@ -45,7 +45,7 @@ namespace ISTB.DataAccess.Repositories.EFImplementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ScheduleByIdBelongsToUserAsync(int id, long telegramUserId)
+        public async Task<bool> BelongsToUserAsync(int id, long telegramUserId)
         {
             return await _context.Schedule
                 .Include(schedule => schedule.User)

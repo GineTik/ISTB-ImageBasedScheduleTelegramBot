@@ -8,6 +8,8 @@ using ISTB.TelegramBot.Extensions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Telegram.Bot.Types.Enums;
+using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
+using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
 
 namespace ISTB.TelegramBot
 {
@@ -21,6 +23,8 @@ namespace ISTB.TelegramBot
             builder.Services.AddData(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(ScheduleProfile));
             builder.Services.AddServices();
+
+            builder.Services.AddTransient<SchedulePresets>();
 
             var app = builder.Build();
             app.UseCatchException(async (updateContext, exception) =>

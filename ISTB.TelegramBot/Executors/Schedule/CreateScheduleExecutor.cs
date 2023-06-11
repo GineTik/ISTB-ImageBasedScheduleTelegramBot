@@ -4,6 +4,7 @@ using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.Framework.Executors;
+using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
