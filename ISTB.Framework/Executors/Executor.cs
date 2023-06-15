@@ -1,7 +1,5 @@
 ﻿using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Executors
 {
@@ -15,12 +13,5 @@ namespace ISTB.Framework.Executors
         public IAdvancedTelegramBotClient Client => UpdateContext?.Client;
 
         private UpdateContext _updateContext;
-
-
-        public async Task<Message> SendTextAsync(string text, long? chatId = null)
-        {
-            chatId ??= UpdateContext.ChatId;
-            return await UpdateContext.Client.SendTextMessageAsync(chatId, text);
-        }
     }
 }

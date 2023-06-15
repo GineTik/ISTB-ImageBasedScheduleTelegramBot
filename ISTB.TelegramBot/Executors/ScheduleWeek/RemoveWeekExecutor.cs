@@ -1,5 +1,4 @@
-﻿using ISTB.DataAccess.Entities;
-using ISTB.Framework.Attributes.TargetExecutorAttributes;
+﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
 using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
 using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
@@ -17,13 +16,13 @@ namespace ISTB.TelegramBot.Executors.ScheduleWeek
             _presets = presets;
         }
 
-        [TargetCallbacksDatas(nameof(ScheduleButtons.RemoveScheduleWeek))]
+        [TargetCallbacksDatas(nameof(WeekButtons.RemoveScheduleWeek))]
         public async Task RemoveWeek(int weekId, int scheduleId, int messageIdToEdit)
         {
             await Client.AnswerCallbackQueryAsync();
             await Client.DeleteCallbackQueryMessageAsync();
 
-            await Client.SendTextResponseAsync($"week id to remove: {weekId}, messageId: {messageIdToEdit}");
+            await Client.SendTextMessageAsync($"week id to remove: {weekId}, messageId: {messageIdToEdit}");
 
             var preset = 
                 await _presets.GetScheduleInfoAsync(scheduleId) ??

@@ -7,6 +7,6 @@
         public int ScheduleId { get; set; }
         public Schedule Schedule { get; set; }
 
-        public ICollection<ScheduleDay> Days { get; set; }
+        public IEnumerable<ScheduleDay> Days { get; set; }
     }
 }

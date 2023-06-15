@@ -16,9 +16,9 @@ namespace ISTB.Framework.Executors.Extensions.Services
         public IEnumerable<Assembly> Assemblies { get; set; } = 
             new List<Assembly>() { Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly() };
 
-        public Type ParametersParserType { get; set; } = typeof(ExecutorParametersParser);
+        public System.Type ParametersParserType { get; set; } = typeof(ExecutorParametersParser);
 
-        public Type BotCommandFactoryType { get; set; } = typeof(ExecutorBotCommandFactory);
+        public System.Type BotCommandFactoryType { get; set; } = typeof(ExecutorBotCommandFactory);
     }
 
     public static class ExecutorExtensions
@@ -65,7 +65,7 @@ namespace ISTB.Framework.Executors.Extensions.Services
             return configuration;
         }
 
-        private static bool typeFit<TBase>(Type type)
+        private static bool typeFit<TBase>(System.Type type)
         {
             return type.IsInterface == false ||
                    type.IsAbstract == false ||

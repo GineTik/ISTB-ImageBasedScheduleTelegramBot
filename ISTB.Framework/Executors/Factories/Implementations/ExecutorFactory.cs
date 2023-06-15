@@ -28,5 +28,10 @@ namespace ISTB.Framework.Executors.Factories.Implementations
             executor.UpdateContext = _updateContext;
             return executor;
         }
+
+        public T CreateExecutor<T>() where T : Executor
+        {
+            return (T)CreateExecutor(typeof(T));
+        }
     }
 }

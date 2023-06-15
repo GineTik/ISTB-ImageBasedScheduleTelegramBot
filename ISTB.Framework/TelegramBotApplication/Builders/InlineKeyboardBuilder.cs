@@ -11,22 +11,40 @@ namespace ISTB.Framework.TelegramBotApplication.Builders
         {
             _buttons = new List<List<InlineKeyboardButton>>();
             _currentRow = new List<InlineKeyboardButton>();
+                
         }
 
-        public InlineKeyboardBuilder ButtonRange(IEnumerable<InlineKeyboardButton> buttons, int rowCount = 1)
+        public InlineKeyboardBuilder ButtonList(IEnumerable<InlineKeyboardButton> buttons, int rowCount = 1)
         {
-            var stack = new Queue<InlineKeyboardButton>(buttons);
+            var queue = new Queue<InlineKeyboardButton>(buttons);
 
-            while (stack.Count > 0)
+            while (queue.Count > 0)
             {
-                for (int i = 0; i < rowCount && stack.Count > 0; i++)
+                for (int i = 0; i < rowCount && queue.Count > 0; i++)
                 {
-                    Button(stack.Dequeue());
+                    Button(queue.Dequeue());
                 }
                 EndRow();
             }
 
             return this;
+        }
+
+        public InlineKeyboardBuilder CallbackButtonList<T>(IEnumerable<T> list, Func<T, int, string> textConfigure, 
+            Func<T, int, string> callbackDataConfigure, int rowCount = 1)
+        {
+            var buttons = new List<InlineKeyboardButton>();
+            int i = 0;
+            foreach (var item in list)
+            {
+                buttons.Add(InlineKeyboardButton.WithCallbackData(
+                    textConfigure.Invoke(item, i),
+                    callbackDataConfigure.Invoke(item, i)
+                ));
+                i++;
+            }
+
+            return ButtonList(buttons, rowCount);
         }
 
         public InlineKeyboardBuilder CallbackButton(string text, string callback)
@@ -50,6 +68,9 @@ namespace ISTB.Framework.TelegramBotApplication.Builders
 
         public InlineKeyboardMarkup Build()
         {
+            if (_currentRow.Count != 0)
+                EndRow();
+
             return new InlineKeyboardMarkup(_buttons);
         }
     }

@@ -26,7 +26,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
                 Name = groupName,
                 TelegramUserId = UpdateContext.TelegramUserId
             });
-            await Client.SendTextResponseAsync("Створенна нова група з назвою: " + schedule.Name);
+            await Client.SendTextMessageAsync("Створенна нова група з назвою: " + schedule.Name);
         }
     }
 }

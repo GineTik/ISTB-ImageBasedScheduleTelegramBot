@@ -1,15 +1,11 @@
 ﻿using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
-using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
 using ISTB.Framework.Executors;
-using Telegram.Bot;
-using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
-using ISTB.BusinessLogic.DTOs.Schedule;
-using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
-using ISTB.TelegramBot.Enum.Buttons;
-using Telegram.Bot.Types.ReplyMarkups;
-using ISTB.DataAccess.Entities;
 using ISTB.Framework.TelegramBotApplication.Builders;
+using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
+using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
+using ISTB.TelegramBot.Enum.Buttons;
+using Telegram.Bot;
 
 namespace ISTB.TelegramBot.Executors
 {
@@ -25,7 +21,7 @@ namespace ISTB.TelegramBot.Executors
         [TargetCommands("start")]
         public async Task StartCommand()
         {
-            await Client.SendTextResponseAsync("Success");
+            await Client.SendTextMessageAsync("Success");
             await Client.SetMyCommandsAsync(_commandStorage.Commands);
         }
 
@@ -34,20 +30,27 @@ namespace ISTB.TelegramBot.Executors
         public async Task ConfirmYourAct(string targetCallbackData, string data)
         {
             await Client.AnswerCallbackQueryAsync();
-            await Client.SendTextResponseAsync(
+            await Client.SendTextMessageAsync(
                 "Ви впевнені?",
                 replyMarkup: new InlineKeyboardBuilder()
                     .CallbackButton("Так", $"{targetCallbackData} {data}")
-                    .CallbackButton("Ні", "act_not_confirm").EndRow()
+                    .CallbackButton("Ні", "delete_message").EndRow()
                     .Build()
             );
         }
 
-        [TargetCallbacksDatas("act_not_confirm")]
-        public async Task FailtureRemoveSchedule()
+        [TargetCallbacksDatas("delete_message")]
+        public async Task DeleteMessage(int? messageIdToDeleted)
         {
-            await Client.AnswerCallbackQueryAsync();
             await Client.DeleteCallbackQueryMessageAsync();
+
+            if (messageIdToDeleted != null)
+            {
+                await Client.DeleteMessageAsync(
+                    UpdateContext.ChatId,
+                    messageIdToDeleted.Value
+                );
+            }
         }
     }
 }

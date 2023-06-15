@@ -4,36 +4,43 @@ using ISTB.Framework.MessagePresets.Models;
 using ISTB.Framework.TelegramBotApplication.Builders;
 using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.TelegramBot.Enum.Buttons;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ISTB.TelegramBot.MessagePresets.SchedulesMenu
 {
     public class SchedulePresets
     {
-        private readonly IScheduleService _service;
+        private readonly IScheduleService _scheduleService;
+        private readonly IScheduleWeekService _weekService;
         private readonly UpdateContext _updateContext;
 
-        public SchedulePresets(IScheduleService service, UpdateContextAccessor accessor)
+        public SchedulePresets(IScheduleService service, UpdateContextAccessor accessor, IScheduleWeekService weekService)
         {
-            _service = service;
+            _scheduleService = service;
             _updateContext = accessor.UpdateContext;
+            _weekService = weekService;
         }
 
         public async Task<MessagePreset> GetSchedulesAsync()
         {
-            var schedules = await _service.GetListByTelegramUserIdAsync(_updateContext.TelegramUserId);
+            var schedules = await _scheduleService.GetListByTelegramUserIdAsync(_updateContext.TelegramUserId);
+
+            var username = 
+                _updateContext.Update.Message?.From?.Username ??
+                _updateContext.Update.CallbackQuery?.Message?.Chat?.Username ??
+                "";
 
             var title = schedules.Count() switch
             {
                 0 => "Ви ще не створили розклад",
-                _ => "Ваші розклади"
+                _ => $"Розклади користувача @{username}"
             };
 
             var markup = new InlineKeyboardBuilder()
-                .ButtonRange(
-                    buttons: schedules.Select(s => InlineKeyboardButton.WithCallbackData(
-                        s.Name, $"{nameof(ScheduleButtons.SelectSchedule)} {s.Id}")),
-                    rowCount: 1
+                .CallbackButtonList(
+                    schedules,
+                    (schedule, _) => schedule.Name, 
+                    (schedule, _) => $"{nameof(ScheduleButtons.SelectSchedule)} {schedule.Id}",
+                    rowCount: 2
                 ).Build();
 
             return new MessagePreset
@@ -45,7 +52,7 @@ namespace ISTB.TelegramBot.MessagePresets.SchedulesMenu
 
         public async Task<MessagePreset?> GetScheduleInfoAsync(int scheduleId)
         {
-            var scheduleWithWeeks = await _service.GetWithWeeksByIdAsync(new GetScheduleByIdDTO()
+            var scheduleWithWeeks = await _scheduleService.GetWithWeeksByIdAsync(new GetScheduleByIdDTO()
             {
                 Id = scheduleId,
                 TelegramUserId = _updateContext.TelegramUserId,
@@ -60,14 +67,15 @@ namespace ISTB.TelegramBot.MessagePresets.SchedulesMenu
                 ?? throw new InvalidOperationException("UpdateType is not CallbackQuery");
 
             var markup = new InlineKeyboardBuilder()
-                .ButtonRange(scheduleWithWeeks.Weeks.Select((week, i) => 
-                    InlineKeyboardButton.WithCallbackData(
-                        $"Тиждень {i + 1}", $"{nameof(ScheduleButtons.SelectScheduleWeek)} {week.Id}")),
+                .CallbackButtonList(
+                    scheduleWithWeeks.Weeks, 
+                    (_, i) => $"Тиждень {i + 1}", 
+                    (week, _) => $"{nameof(WeekButtons.SelectScheduleWeek)} {week.Id}",
                     rowCount: 2
                  )
-                .CallbackButton("Створити тиждень", $"{nameof(ScheduleButtons.CreateScheduleWeek)} {scheduleWithWeeks.Id}")
-                .CallbackButton("Видалити розклад", $"confirm_act {nameof(ScheduleButtons.RemoveSchedule)} | {scheduleWithWeeks.Id} {messageId}").EndRow()
-                .CallbackButton("<<< Назад", nameof(ScheduleButtons.BackToMySchedules)).EndRow()
+                .CallbackButton("Створити тиждень", $"{nameof(WeekButtons.CreateScheduleWeek)} {scheduleWithWeeks.Id}").EndRow()
+                .CallbackButton("Налаштування", $"{nameof(ScheduleButtons.ScheduleSettings)} {scheduleWithWeeks.Id}").EndRow()
+                .CallbackButton("<<< Назад", nameof(ScheduleButtons.SelectSchedules)).EndRow()
                 .Build();
 
             return new MessagePreset
@@ -79,7 +87,7 @@ namespace ISTB.TelegramBot.MessagePresets.SchedulesMenu
 
         public async Task<MessagePreset?> GetScheduleWeekInfoAsync(int weekId, int messageIdToEdit)
         {
-            var week = await _service.GetWeekByIdAsync(weekId);
+            var week = await _weekService.GetWeekByIdAsync(weekId);
 
             if (week == null)
             {
@@ -87,7 +95,13 @@ namespace ISTB.TelegramBot.MessagePresets.SchedulesMenu
             }
 
             var markup = new InlineKeyboardBuilder()
-                .CallbackButton("Видалити тиждень", $"confirm_act {nameof(ScheduleButtons.RemoveScheduleWeek)} | {weekId} {week.ScheduleId} {messageIdToEdit}").EndRow()
+                .CallbackButtonList(
+                    week.Days,
+                    (day, _) => day.Name,
+                    (day, _) => $"{nameof(DayButtons.SelectScheduleDay)} {day.Position} {week.Id}",
+                    rowCount: 2
+                 )
+                .CallbackButton("Видалити тиждень", $"confirm_act {nameof(WeekButtons.RemoveScheduleWeek)} | {weekId} {week.ScheduleId} {messageIdToEdit}").EndRow()
                 .CallbackButton("<<< Назад", $"{nameof(ScheduleButtons.SelectSchedule)} {week.ScheduleId}").EndRow()
                 .Build();
 
