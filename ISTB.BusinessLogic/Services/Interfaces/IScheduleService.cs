@@ -9,9 +9,7 @@ namespace ISTB.BusinessLogic.Services.Interfaces
         Task<ScheduleDTO?> GetByNameAsync(GetScheduleByNameDTO dto);
         Task<ScheduleDTO?> GetByIdAsync(GetScheduleByIdDTO dto);
         Task<ScheduleWithWeeksDTO?> GetWithWeeksByIdAsync(GetScheduleByIdDTO dto);
-        Task<ScheduleWeekDTO?> GetWeekByIdAsync(int weekId);
         Task<ScheduleDTO> CreateAsync(CreateScheduleDTO dto);
-        Task<ScheduleWeekDTO> CreateWeekAsync(CreateScheduleWeekDTO dto);
         Task RemoveByNameAsync(RemoveScheduleDTO dto);
         Task RemoveByIdAsync(RemoveScheduleByIdDTO dto);
         Task ChangeNameAsync(ChangeScheduleNameDTO dto);

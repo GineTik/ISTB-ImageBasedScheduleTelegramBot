@@ -1,4 +1,5 @@
-﻿using ISTB.Framework.Executors.Parsers.Interfaces;
+﻿using ISTB.Framework.Executors.Extensions.Nullable;
+using ISTB.Framework.Executors.Parsers.Interfaces;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -6,47 +7,54 @@ namespace ISTB.Framework.Executors.Parsers.Implementations
 {
     public class ExecutorParametersParser : IExecutorParametersParser
     {
-        public object?[] Parse(string text, ParameterInfo[] ParametersInfo, string parameterSeparator)
+        private int _missingArgs;
+
+        public object?[] Parse(string text, ParameterInfo[] parameters, string parameterSeparator)
         {
-            string args = Regex.Replace(text ?? "", "^/*\\w+\\s*", "");
+            text = Regex.Replace(text ?? "", "^/*\\w+\\s*", "");
+            
+            var args = String.IsNullOrEmpty(text) ?
+                new Stack<string>() :
+                new Stack<string>(text.Split(parameterSeparator));
+            var parametersStack = new Stack<ParameterInfo>(parameters);
 
-            if (string.IsNullOrEmpty(args))
-                return new object[0];
+            if (isCorrectArgsCount(args, parametersStack))
+                throw new InvalidOperationException($"Args length is less, require {parametersStack.Count - parameters.NullableCount()}");
 
-            var stringParametersStack = new Stack<string>(args.Split(parameterSeparator));
-            var resultParameters = new List<object?>();
-            var nullParametersCount = ParametersInfo.Length - stringParametersStack.Count;
-
-            if (ParametersInfo.Length - nullableCount(ParametersInfo) > stringParametersStack.Count)
-                throw new InvalidOperationException($"Args length is less, require {ParametersInfo.Length - nullableCount(ParametersInfo)}");
-
-            foreach (var parameterInfo in ParametersInfo.Reverse())
+            _missingArgs = parametersStack.Count - args.Count;
+            var convertedArgs = new Stack<object?>();
+            while (parametersStack.Count != 0)
             {
-                if (isNullable(parameterInfo) == true && nullParametersCount != 0)
-                {
-                    nullParametersCount--;
-                    resultParameters.Add(null);
-                    continue;
-                }
+                var value = handleBasicDataType(args, parametersStack);
+                convertedArgs.Push(value);
+            }
+            return convertedArgs.ToArray();
+        }
 
-                var type = parameterInfo.ParameterType;
-                var value = Convert.ChangeType(stringParametersStack.Pop(), type);
-                resultParameters.Add(value);
+        private bool isCorrectArgsCount(Stack<string> args, Stack<ParameterInfo> parameters)
+        {
+            return parameters.Count - parameters.NullableCount() > args.Count;
+        }
+
+        private object? handleBasicDataType(Stack<string> args, Stack<ParameterInfo> parameters)
+        {
+            var parameter = parameters.Pop();
+            var targetType = parameter.ParameterType;
+
+            if (parameter.IsNullable() == true && _missingArgs != 0)
+            {
+                _missingArgs--;
+                return null;
             }
 
-            return resultParameters.Reverse<object>().ToArray();
-        }
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                targetType = Nullable.GetUnderlyingType(targetType);
+            }
 
-        private int nullableCount(ParameterInfo[] infos)
-        {
-            return infos.Count(isNullable);
-        }
+            var stringValue = args.Pop();
 
-        private bool isNullable(ParameterInfo info)
-        {
-            var nullableInfoContext = new NullabilityInfoContext();
-            var result = nullableInfoContext.Create(info).WriteState == NullabilityState.Nullable;
-            return result;
+            return Convert.ChangeType(stringValue, targetType);
         }
     }
 }

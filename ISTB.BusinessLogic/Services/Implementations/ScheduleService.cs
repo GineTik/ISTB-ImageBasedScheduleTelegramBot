@@ -95,25 +95,5 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
             return _mapper.Map<ScheduleWithWeeksDTO>(schedule);
         }
-
-        public async Task<ScheduleWeekDTO> CreateWeekAsync(CreateScheduleWeekDTO dto)
-        {
-            if (await _scheduleRepository.BelongsToUserAsync(dto.ScheduleId, dto.TelegramUserId) == false)
-                throw new InvalidOperationException($"Schedule not belongs to this user (id {dto.TelegramUserId})");
-
-            var week = await _scheduleWeekRepository.AddAsync(new ScheduleWeek
-            {
-                Position = null,
-                ScheduleId = dto.ScheduleId,
-            });
-
-            return _mapper.Map<ScheduleWeekDTO>(week);
-        }
-
-        public async Task<ScheduleWeekDTO?> GetWeekByIdAsync(int weekId)
-        {
-            var week = await _scheduleWeekRepository.GetByIdAsync(weekId);
-            return _mapper.Map<ScheduleWeekDTO>(week);
-        }
     }
 }

@@ -7,9 +7,10 @@ namespace ISTB.DataAccess.Entities
         [Required]
         public uint Position { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        [Required]
-        public string ImageFileUrl { get; set; }
+        public string? ImageFileUrl { get; set; }
+
+        public int ScheduleWeekId { get; set; }
     }
 }

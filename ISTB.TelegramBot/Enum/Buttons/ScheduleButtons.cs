@@ -2,10 +2,8 @@
 {
     public enum ScheduleButtons
     {
-        CreateScheduleWeek,
-
+        SelectSchedules,
         SelectSchedule,
-        SelectScheduleWeek,
 
         BackToMySchedules,
 
@@ -13,6 +11,9 @@
         ConfirmRemoveSchedule,
         FailtureRemoveSchedule,
 
-        RemoveScheduleWeek
+        ScheduleSettings,
+
+        SelectScheduleToChangeName,
+        CancelChangeName
     }
 }

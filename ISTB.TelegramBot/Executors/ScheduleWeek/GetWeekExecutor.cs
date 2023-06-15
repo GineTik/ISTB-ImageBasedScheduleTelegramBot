@@ -15,7 +15,7 @@ namespace ISTB.TelegramBot.Executors.ScheduleWeek
             _presets = presets;
         }
 
-        [TargetCallbacksDatas(nameof(ScheduleButtons.SelectScheduleWeek))]
+        [TargetCallbacksDatas(nameof(WeekButtons.SelectScheduleWeek))]
         public async Task GetScheduleWeek(int weekId)
         {
             var messageId = UpdateContext.Update.CallbackQuery!.Message!.MessageId;

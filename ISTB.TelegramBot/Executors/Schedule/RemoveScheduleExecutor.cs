@@ -1,13 +1,15 @@
 ﻿using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.BusinessLogic.Services.Interfaces;
+using ISTB.DataAccess.Entities;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
+using ISTB.Framework.Executors.Factories.Interfaces;
 using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
+using ISTB.Framework.TelegramBotApplication.Builders;
 using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
 using ISTB.TelegramBot.Enum.Buttons;
 using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
 using Telegram.Bot;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
@@ -15,17 +17,28 @@ namespace ISTB.TelegramBot.Executors.Schedule
     {
         private readonly IScheduleService _service;
         private readonly SchedulePresets _presets;
+        private readonly IExecutorFactory _factory;
 
-        public RemoveScheduleExecutor(IScheduleService service, SchedulePresets presets)
+        public RemoveScheduleExecutor(IScheduleService service, SchedulePresets presets, IExecutorFactory factory)
         {
             _service = service;
             _presets = presets;
+            _factory = factory;
+        }
+
+        [TargetCommands("remove_schedule")]
+        public async Task RemoveScheduleCommand()
+        {
+            var executor = _factory.CreateExecutor<GetScheduleExecutor>();
+            await executor.SendSchedules(
+                "Виберіть розклад, який бажаєте видалити",
+                ScheduleButtons.RemoveSchedule
+            );
         }
 
         [TargetCallbacksDatas(nameof(ScheduleButtons.RemoveSchedule))]
-        public async Task ConfirmRemoveSchedule(int scheduleId, int messageId)
+        public async Task RemoveSchedule(int scheduleId, int? messageId)
         {
-            await Client.AnswerCallbackQueryAsync();
             await Client.DeleteCallbackQueryMessageAsync();
 
             await _service.RemoveByIdAsync(new RemoveScheduleByIdDTO()
@@ -34,74 +47,20 @@ namespace ISTB.TelegramBot.Executors.Schedule
                 TelegramUserId = UpdateContext.TelegramUserId
             });
 
-            var preset = await _presets.GetSchedulesAsync();
-            await Client.EditMessageResponseAsync(
-                messageId,
-                preset
-            );
+            if (messageId != null)
+            {
+                var preset = await _presets.GetSchedulesAsync();
+                await Client.EditMessageResponseAsync(
+                    messageId.Value,
+                    preset
+                ); 
+            }
+            else
+            {
+                await Client.SendTextMessageAsync(
+                    "Розклад видалений"
+                );
+            }
         }
-
-        //[TargetCallbacksDatas(nameof(ScheduleButtons.RemoveSchedule))]
-        //public async Task RemoveSchedule(int scheduleId)
-        //{
-        //    await Client.AnswerCallbackQueryAsync();
-
-        //    var schedule = await _service.GetByIdAsync(new GetScheduleByIdDTO
-        //    {
-        //        Id = scheduleId,
-        //        TelegramUserId = UpdateContext.TelegramUserId
-        //    });
-
-        //    if (schedule == null)
-        //    {
-        //        await Client.DeleteCurrentCallbackButtonAsync();
-        //        return;
-        //    }
-
-        //    await Client.EditMessageTextAsync(
-        //        UpdateContext.ChatId,
-        //        UpdateContext.Update.CallbackQuery!.Message!.MessageId,
-        //        "Ви впевнені?",
-        //        replyMarkup: new InlineKeyboardMarkup(new[] {
-        //            InlineKeyboardButton.WithCallbackData(
-        //                "Так", $"{nameof(ScheduleButtons.ConfirmRemoveSchedule)} {schedule.Id}"),
-        //            InlineKeyboardButton.WithCallbackData(
-        //                "Ні", $"{nameof(ScheduleButtons.FailtureRemoveSchedule)} {schedule.Id}")
-        //        })
-        //    );
-        //}
-
-        //[TargetCallbacksDatas(nameof(ScheduleButtons.ConfirmRemoveSchedule))]
-        //public async Task ConfirmRemoveSchedule(int groupId)
-        //{
-        //    await Client.AnswerCallbackQueryAsync();
-
-        //    await _service.RemoveByIdAsync(new RemoveScheduleByIdDTO()
-        //    {
-        //        Id = groupId,
-        //        TelegramUserId = UpdateContext.TelegramUserId
-        //    });
-
-        //    var preset = await _presets.GetSchedulesAsync();
-        //    await Client.EditMessageResponseAsync(
-        //        UpdateContext.Update.CallbackQuery!.Message!.MessageId,
-        //        preset
-        //    );
-        //}
-
-        //[TargetCallbacksDatas(nameof(ScheduleButtons.FailtureRemoveSchedule))]
-        //public async Task FailtureRemoveSchedule(int scheduleId)
-        //{
-        //    await Client.AnswerCallbackQueryAsync();
-
-        //    var preset = 
-        //        await _presets.GetScheduleInfoAsync(scheduleId) ??
-        //        await _presets.GetSchedulesAsync();
-
-        //    await Client.EditMessageResponseAsync(
-        //        UpdateContext.Update.CallbackQuery!.Message!.MessageId,
-        //        preset
-        //    );
-        //}
     }
 }

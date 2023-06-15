@@ -34,11 +34,12 @@ namespace ISTB.TelegramBot
                     TargetParameterCountException => "Ви забули ввести деякі параметри",
                     _ => exception.Message
                 };
-                await updateContext.Client.SendTextResponseAsync(message);
+                await updateContext.Client.SendTextMessageAsync(message);
+                Console.WriteLine(exception.ToString());
             });
             app.UseExecutors();
             app.Use(async (UpdateContext, _) => 
-                await UpdateContext.Client.SendTextResponseAsync("Мені нема чим тобі відповіти")
+                await UpdateContext.Client.SendTextMessageAsync("Мені нема чим тобі відповіти")
             ); 
             app.Run();
 

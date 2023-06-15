@@ -1,10 +1,10 @@
 ﻿using ISTB.Framework.Attributes.ParametersParse;
-using ISTB.Framework.TelegramBotApplication.Context;
-using ISTB.Framework.TelegramBotApplication.Delegates;
-using ISTB.Framework.TelegramBotApplication.Middlewares;
 using ISTB.Framework.Executors.Factories.Interfaces;
 using ISTB.Framework.Executors.Parsers.Interfaces;
 using ISTB.Framework.Executors.Storages.Interfaces;
+using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.Framework.TelegramBotApplication.Delegates;
+using ISTB.Framework.TelegramBotApplication.Middlewares;
 using System.Reflection;
 
 namespace ISTB.Framework.Executors.Middlewares
@@ -15,11 +15,11 @@ namespace ISTB.Framework.Executors.Middlewares
         private readonly IExecutorFactory _executorFactory;
         private readonly IExecutorParametersParser _parameterParser;
 
-        public TargetExecutorMiddleware(IExecutorFactory executorFactory,
-            IExecutorParametersParser parameterParser, ITargetMethodStorage methodStorage)
+        public TargetExecutorMiddleware(IExecutorParametersParser parameterParser, IExecutorFactory executorFactory,
+            ITargetMethodStorage methodStorage)
         {
-            _executorFactory = executorFactory;
             _parameterParser = parameterParser;
+            _executorFactory = executorFactory;
             _methodStorage = methodStorage;
         }
 
@@ -33,17 +33,22 @@ namespace ISTB.Framework.Executors.Middlewares
                 return;
             }
 
-            string text = updateContext.Update.Message?.Text ?? updateContext.Update.CallbackQuery?.Data ?? "";
-            string separator = methodInfo.GetCustomAttribute<ParametersSeparatorAttribute>()?.Separator ?? " ";
+            string text =
+                updateContext.Update.Message?.Text ??
+                updateContext.Update.CallbackQuery?.Data ??
+                "";
+            string separator =
+                methodInfo.GetCustomAttribute<ParametersSeparatorAttribute>()?.Separator ??
+                " ";
             var parameters = _parameterParser.Parse(text, methodInfo.GetParameters(), separator);
-            
-            var executorType = 
-                methodInfo.DeclaringType ?? 
+
+            var executorType =
+                methodInfo.DeclaringType ??
                 methodInfo.ReflectedType ??
                 throw new InvalidOperationException($"Method {methodInfo.Name} don't have DeclaringType and ReflectedType");
 
             var executor = _executorFactory.CreateExecutor(executorType);
-            await (Task)methodInfo.Invoke(executor, parameters);
+            await (Task)methodInfo.Invoke(executor, parameters);           
         }
     }
 }

@@ -10,16 +10,16 @@ namespace ISTB.TelegramBot.Executors.ScheduleWeek
 {
     public class CreateWeekExecutor : Executor
     {
-        private readonly IScheduleService _service;
+        private readonly IScheduleWeekService _service;
         private readonly SchedulePresets _presets;
 
-        public CreateWeekExecutor(IScheduleService service, SchedulePresets presets)
+        public CreateWeekExecutor(IScheduleWeekService service, SchedulePresets presets)
         {
             _service = service;
             _presets = presets;
         }
 
-        [TargetCallbacksDatas(nameof(ScheduleButtons.CreateScheduleWeek))]
+        [TargetCallbacksDatas(nameof(WeekButtons.CreateScheduleWeek))]
         public async Task CreateWeek(int scheduleId)
         {
             await _service.CreateWeekAsync(new CreateScheduleWeekDTO

@@ -8,7 +8,7 @@ namespace ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotCl
 {
     public static class SendMessageExtensions
     {
-        public static async Task<Message> SendTextResponseAsync(
+        public static async Task<Message> SendTextMessageAsync(
             this IAdvancedTelegramBotClient client,
             string text,
             int? messageThreadId = default,
