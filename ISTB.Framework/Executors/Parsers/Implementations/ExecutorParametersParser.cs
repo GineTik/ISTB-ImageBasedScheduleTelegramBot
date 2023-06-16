@@ -1,5 +1,6 @@
 ﻿using ISTB.Framework.Executors.Extensions.Nullable;
 using ISTB.Framework.Executors.Parsers.Interfaces;
+using ISTB.Framework.Executors.Parsers.Results;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -9,7 +10,7 @@ namespace ISTB.Framework.Executors.Parsers.Implementations
     {
         private int _missingArgs;
 
-        public object?[] Parse(string text, ParameterInfo[] parameters, string parameterSeparator)
+        public ParametersParseResult Parse(string text, ParameterInfo[] parameters, string parameterSeparator)
         {
             text = Regex.Replace(text ?? "", "^/*\\w+\\s*", "");
             
@@ -19,16 +20,25 @@ namespace ISTB.Framework.Executors.Parsers.Implementations
             var parametersStack = new Stack<ParameterInfo>(parameters);
 
             if (isCorrectArgsCount(args, parametersStack))
-                throw new InvalidOperationException($"Args length is less, require {parametersStack.Count - parameters.NullableCount()}");
+                return ParametersParseResult.ArgsLengthIsLess;//throw new InvalidOperationException($"Args length is less, require {parametersStack.Count - parameters.NullableCount()}");
 
             _missingArgs = parametersStack.Count - args.Count;
             var convertedArgs = new Stack<object?>();
-            while (parametersStack.Count != 0)
+
+            try
             {
-                var value = handleBasicDataType(args, parametersStack);
-                convertedArgs.Push(value);
+                while (parametersStack.Count != 0)
+                {
+                    var value = handleBasicDataType(args, parametersStack);
+                    convertedArgs.Push(value);
+                }
             }
-            return convertedArgs.ToArray();
+            catch
+            {
+                return ParametersParseResult.ParseError;
+            }
+
+            return ParametersParseResult.Success(convertedArgs.ToArray());
         }
 
         private bool isCorrectArgsCount(Stack<string> args, Stack<ParameterInfo> parameters)
@@ -49,7 +59,7 @@ namespace ISTB.Framework.Executors.Parsers.Implementations
 
             if (targetType.IsGenericType && targetType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
-                targetType = Nullable.GetUnderlyingType(targetType);
+                targetType = Nullable.GetUnderlyingType(targetType)!;
             }
 
             var stringValue = args.Pop();

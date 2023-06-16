@@ -18,12 +18,13 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetCommands("create_schedule, cs")]
-        [ParametersSeparator(", ")]
-        public async Task Create(string groupName)
+        [ParametersSeparator("")]
+        [ParseErrorMessages(ArgsLengthIsLess = "Ви забули ввести назву розкладу")]
+        public async Task Create(string scheduleName)
         {
             var schedule = await _service.CreateAsync(new CreateScheduleDTO
             {
-                Name = groupName,
+                Name = scheduleName,
                 TelegramUserId = UpdateContext.TelegramUserId
             });
             await Client.SendTextMessageAsync("Створенна нова група з назвою: " + schedule.Name);
