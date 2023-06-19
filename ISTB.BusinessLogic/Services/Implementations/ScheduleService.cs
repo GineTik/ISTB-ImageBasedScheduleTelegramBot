@@ -22,9 +22,12 @@ namespace ISTB.BusinessLogic.Services.Implementations
             _scheduleWeekRepository = scheduleWeekRepository;
         }
 
-        public Task ChangeNameAsync(ChangeScheduleNameDTO dto)
+        public async Task ChangeNameAsync(ChangeScheduleNameDTO dto)
         {
-            return _scheduleRepository.ChangeNameAsync(dto.OldName, dto.NewName, dto.TelegramUserId);
+            if (await _scheduleRepository.BelongsToUserAsync(dto.ScheduleId, dto.TelegramUserId) == false)
+                throw new InvalidOperationException("Розклад не належить користовачу");
+
+            await _scheduleRepository.ChangeNameAsync(dto.ScheduleId, dto.NewName);
         }
 
         public async Task<ScheduleDTO> CreateAsync(CreateScheduleDTO dto)

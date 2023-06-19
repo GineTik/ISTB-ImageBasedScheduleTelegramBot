@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace ISTB.Framework.CreationalClasses.Factories.Interfaces
+namespace ISTB.Framework.TelegramBotApplication.Factories.Interfaces
 {
     public interface IConfigurationFactory
     {

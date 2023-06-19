@@ -1,8 +1,8 @@
-﻿using ISTB.Framework.CreationalClasses.Factories.Interfaces;
+﻿using ISTB.Framework.TelegramBotApplication.Factories.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
-namespace ISTB.Framework.CreationalClasses.Factories.Implementations
+namespace ISTB.Framework.TelegramBotApplication.Factories.Implementations
 {
     public class ConfigurationFactory : IConfigurationFactory
     {

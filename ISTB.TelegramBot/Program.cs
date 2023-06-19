@@ -10,6 +10,7 @@ using System.Reflection;
 using Telegram.Bot.Types.Enums;
 using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
 using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
+using ISTB.Framework.Session.Extensions.Services;
 
 namespace ISTB.TelegramBot
 {
@@ -19,12 +20,14 @@ namespace ISTB.TelegramBot
         {
             var builder = new BotApplicationBuilder();
             builder.ReceiverOptions.ConfigureAllowedUpdates(UpdateType.Message, UpdateType.CallbackQuery);
-            builder.Services.AddExecutors();
+
             builder.Services.AddData(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(ScheduleProfile));
             builder.Services.AddServices();
-
             builder.Services.AddTransient<SchedulePresets>();
+
+            builder.Services.AddExecutors();
+            builder.Services.AddSessions();
 
             var app = builder.Build();
             app.UseCatchException(async (updateContext, exception) =>

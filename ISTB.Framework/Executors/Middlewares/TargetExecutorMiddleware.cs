@@ -31,7 +31,7 @@ namespace ISTB.Framework.Executors.Middlewares
 
         public async Task InvokeAsync(UpdateContext updateContext, NextDelegate next)
         {
-            var methodInfo = _methodStorage.GetMethodInfoToExecute(updateContext.Update);
+            var methodInfo = await _methodStorage.GetMethodInfoToExecuteAsync(updateContext);
 
             if (methodInfo == null)
             {

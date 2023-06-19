@@ -7,7 +7,7 @@ namespace ISTB.DataAccess.Repositories.Interfaces
         Task<ICollection<Schedule>> GetListByTelegramUserIdAsync(long telegramUserId);
         Task<Schedule?> GetByNameAsync(string name, long telegramUserId);
         Task RemoveByNameAsync(string name, long telegramUserId);
-        Task ChangeNameAsync(string oldName, string newName, long telegramUserId);
+        Task ChangeNameAsync(int scheduleId, string newName);
         Task<bool> BelongsToUserAsync(int id, long telegramUserId);
     }
 }

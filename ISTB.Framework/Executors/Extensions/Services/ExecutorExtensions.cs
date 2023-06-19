@@ -5,6 +5,8 @@ using ISTB.Framework.Executors.Parsers.Implementations;
 using ISTB.Framework.Executors.Parsers.Interfaces;
 using ISTB.Framework.Executors.Storages.Implementations;
 using ISTB.Framework.Executors.Storages.Interfaces;
+using ISTB.Framework.Executors.Storages.UserStateSaver.Implementations;
+using ISTB.Framework.Executors.Storages.UserStateSaver.Interfaces;
 using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -14,7 +16,18 @@ namespace ISTB.Framework.Executors.Extensions.Services
     public static class ExecutorExtensions
     {
         public static IServiceCollection AddExecutors(this IServiceCollection services, 
-            Assembly[]? assemblies = null, Action<ParameterParserOptions>? configure = null)
+            Assembly[]? assemblies = null, Action<ExecutorOptions>? configure = null)
+        {
+            var executorsTypes = getExecutorsTypes(assemblies);
+            var executorOptions = services.configureOptions(executorsTypes, configure);
+
+            services.addTransientServices(executorsTypes, executorOptions);
+            services.addSingletonServices(executorOptions);
+
+            return services;
+        }
+
+        private static IEnumerable<Type> getExecutorsTypes(Assembly[]? assemblies = null)
         {
             assemblies ??= new[] { Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly() };
 
@@ -23,29 +36,51 @@ namespace ISTB.Framework.Executors.Extensions.Services
                 assembly.GetTypes().Where(type => type != baseExecutorType && baseExecutorType.IsAssignableFrom(type))
             );
 
-            var configureOptions = configure ?? (options =>
+            return executorsTypes;
+        }
+
+        private static ExecutorOptions configureOptions(this IServiceCollection services,
+            IEnumerable<Type> executorsTypes, Action<ExecutorOptions>? configure = null)
+        {
+            var executorOptions = new ExecutorOptions();
+            configure?.Invoke(executorOptions);
+            
+            services.Configure<ParameterParserOptions>(options =>
             {
-                options.DefaultSeparator = " ";
-                options.ParametersParserType = typeof(ExecutorParametersParser);
-                options.ErrorMessages.TypeParseError = "Parse type error";
-                options.ErrorMessages.ArgsLengthIsLess = "Args length is less";
+                options.DefaultSeparator = executorOptions.ParameterParser.DefaultSeparator;
+                options.ParserType = executorOptions.ParameterParser.ParserType;
+                options.ErrorMessages = executorOptions.ParameterParser.ErrorMessages;
             });
 
-            var parserOptions = new ParameterParserOptions();
-            configureOptions.Invoke(parserOptions);
+            services.Configure<UserStateOptions>(options =>
+            {
+                options.DefaultUserState = executorOptions.UserState.DefaultUserState;
+                options.SaverType = executorOptions.UserState.SaverType;
+            });
 
-            services.Configure<ParameterParserOptions>(configureOptions);
+            services.Configure<TargetMethodOptinons>(options => options.ExecutorsTypes = executorsTypes);
 
+            return executorOptions;
+        }
+
+        private static void addTransientServices(this IServiceCollection services, IEnumerable<Type> executorsTypes,
+            ExecutorOptions executorOptions)
+        {
             services.AddTransient<IExecutorFactory, ExecutorFactory>();
             services.AddTransient<ICommandStorage, ExecutorCommandStorage>(); // TODO: подумати чи потрібно тут Transient чи Singleton
             services.AddTransient<IBotCommandFactory, ExecutorBotCommandFactory>();
-            services.AddTransient(typeof(IExecutorParametersParser), parserOptions.ParametersParserType);
-            services.AddSingleton<ITargetMethodStorage>(new TargetMethodStorage(executorsTypes));
+            services.AddTransient(typeof(IExecutorParametersParser), executorOptions.ParameterParser.ParserType);
 
             foreach (var type in executorsTypes)
                 services.AddTransient(type);
 
-            return services;
+        }
+
+        private static void addSingletonServices(this IServiceCollection services, ExecutorOptions executorOptions)
+        {
+            services.AddSingleton<ITargetMethodStorage, TargetMethodStorage>();
+            services.AddSingleton<IUserStateStorage, UserStateStorage>();
+            services.AddSingleton(typeof(IUserStateSaver), executorOptions.UserState.SaverType);
         }
     }
 }

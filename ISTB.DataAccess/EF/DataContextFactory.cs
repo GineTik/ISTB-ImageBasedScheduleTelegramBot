@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.CreationalClasses.Factories.Implementations;
+﻿using ISTB.Framework.TelegramBotApplication.Factories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

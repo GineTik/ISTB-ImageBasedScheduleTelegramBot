@@ -1,4 +1,5 @@
 ﻿using ISTB.Framework.Attributes.ParametersParse;
+using ISTB.Framework.Executors.Exceptions;
 using ISTB.Framework.Executors.Parsers.Interfaces;
 
 namespace ISTB.Framework.Executors.Options
@@ -6,7 +7,7 @@ namespace ISTB.Framework.Executors.Options
     public class ParameterParserOptions
     {
         private Type _parametersParserType;
-        public Type ParametersParserType
+        public Type ParserType
         {
             get
             {
@@ -14,13 +15,7 @@ namespace ISTB.Framework.Executors.Options
             }
             set
             {
-                if (value.IsInterface == true ||
-                   value.IsAbstract == true ||
-                   typeof(IExecutorParametersParser).IsAssignableFrom(value) == false)
-                {
-                    throw new ArgumentException($"Type {value.Name} is interface or abstract or not inherit IExecutorParametersParser");
-                }
-
+                InvalidTypeException.ThrowIfNotImplementation<IExecutorParametersParser>(value);
                 _parametersParserType = value;
             }
         }
