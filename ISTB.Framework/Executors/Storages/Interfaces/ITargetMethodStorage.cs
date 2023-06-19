@@ -1,6 +1,5 @@
 ﻿using ISTB.Framework.TelegramBotApplication.Context;
 using System.Reflection;
-using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Executors.Storages.Interfaces
 {
@@ -8,6 +7,6 @@ namespace ISTB.Framework.Executors.Storages.Interfaces
     {
         public IEnumerable<MethodInfo> Methods { get; }
 
-        MethodInfo? GetMethodInfoToExecute(Update update);
+        Task<MethodInfo?> GetMethodInfoToExecuteAsync(UpdateContext updateContext);
     }
 }

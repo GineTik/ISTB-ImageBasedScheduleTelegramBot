@@ -1,75 +1,86 @@
-﻿using ISTB.Framework.TelegramBotApplication.Context;
-using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
-using ISTB.Framework.Executors.Factories.Implementations;
+﻿using ISTB.Framework.Executors.Factories.Implementations;
 using ISTB.Framework.Executors.Factories.Interfaces;
+using ISTB.Framework.Executors.Options;
 using ISTB.Framework.Executors.Parsers.Implementations;
 using ISTB.Framework.Executors.Parsers.Interfaces;
 using ISTB.Framework.Executors.Storages.Implementations;
 using ISTB.Framework.Executors.Storages.Interfaces;
+using ISTB.Framework.Executors.Storages.UserStateSaver.Implementations;
+using ISTB.Framework.Executors.Storages.UserStateSaver.Interfaces;
+using ISTB.Framework.TelegramBotApplication.Storages.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace ISTB.Framework.Executors.Extensions.Services
 {
-    public class ExecutorConfiguration
-    {
-        public IEnumerable<Assembly> Assemblies { get; set; } = 
-            new List<Assembly>() { Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly() };
-
-        public System.Type ParametersParserType { get; set; } = typeof(ExecutorParametersParser);
-
-        public System.Type BotCommandFactoryType { get; set; } = typeof(ExecutorBotCommandFactory);
-    }
-
     public static class ExecutorExtensions
     {
-        public static IServiceCollection AddExecutors(this IServiceCollection services, Action<ExecutorConfiguration>? configureAction = null)
+        public static IServiceCollection AddExecutors(this IServiceCollection services, 
+            Assembly[]? assemblies = null, Action<ExecutorOptions>? configure = null)
         {
-            var configuration = configureParameters(configureAction);
-            
-            var baseExecutorType = typeof(Executor);
-            var executorsTypes = configuration.Assemblies.SelectMany(assembly =>
-                assembly.GetTypes().Where(type => type != baseExecutorType && baseExecutorType.IsAssignableFrom(type))
-            );
+            var executorsTypes = getExecutorsTypes(assemblies);
+            var executorOptions = services.configureOptions(executorsTypes, configure);
 
-            services.AddTransient<IExecutorFactory, ExecutorFactory>();
-            services.AddTransient<ICommandStorage, ExecutorCommandStorage>(); // TODO: подумати чи потрібно тут Transient чи Singleton
-            services.AddTransient(typeof(IBotCommandFactory), configuration.BotCommandFactoryType);
-            services.AddTransient(typeof(IExecutorParametersParser), configuration.ParametersParserType);
-            services.AddSingleton<ITargetMethodStorage>(new TargetMethodStorage(executorsTypes));
-
-            foreach (var type in executorsTypes)
-                services.AddTransient(type);
+            services.addTransientServices(executorsTypes, executorOptions);
+            services.addSingletonServices(executorOptions);
 
             return services;
         }
 
-        private static ExecutorConfiguration configureParameters(Action<ExecutorConfiguration>? configure = null)
+        private static IEnumerable<Type> getExecutorsTypes(Assembly[]? assemblies = null)
         {
-            var configuration = new ExecutorConfiguration();
+            assemblies ??= new[] { Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly() };
 
-            if (configure == null)
-                return configuration;
+            var baseExecutorType = typeof(Executor);
+            var executorsTypes = assemblies.SelectMany(assembly =>
+                assembly.GetTypes().Where(type => type != baseExecutorType && baseExecutorType.IsAssignableFrom(type))
+            );
 
-            configure.Invoke(configuration);
-
-            ArgumentNullException.ThrowIfNull(configuration.Assemblies);
-            ArgumentNullException.ThrowIfNull(configuration.ParametersParserType);
-
-            if (typeFit<IExecutorParametersParser>(configuration.ParametersParserType) == false)
-                throw new ArgumentException($"{configuration.ParametersParserType.Name} is invalid");
-            
-            if (typeFit<IBotCommandFactory>(configuration.BotCommandFactoryType) == false)
-                throw new ArgumentException($"{configuration.BotCommandFactoryType.Name} is invalid");
-
-            return configuration;
+            return executorsTypes;
         }
 
-        private static bool typeFit<TBase>(System.Type type)
+        private static ExecutorOptions configureOptions(this IServiceCollection services,
+            IEnumerable<Type> executorsTypes, Action<ExecutorOptions>? configure = null)
         {
-            return type.IsInterface == false ||
-                   type.IsAbstract == false ||
-                   typeof(TBase).IsAssignableFrom(type);
+            var executorOptions = new ExecutorOptions();
+            configure?.Invoke(executorOptions);
+            
+            services.Configure<ParameterParserOptions>(options =>
+            {
+                options.DefaultSeparator = executorOptions.ParameterParser.DefaultSeparator;
+                options.ParserType = executorOptions.ParameterParser.ParserType;
+                options.ErrorMessages = executorOptions.ParameterParser.ErrorMessages;
+            });
+
+            services.Configure<UserStateOptions>(options =>
+            {
+                options.DefaultUserState = executorOptions.UserState.DefaultUserState;
+                options.SaverType = executorOptions.UserState.SaverType;
+            });
+
+            services.Configure<TargetMethodOptinons>(options => options.ExecutorsTypes = executorsTypes);
+
+            return executorOptions;
+        }
+
+        private static void addTransientServices(this IServiceCollection services, IEnumerable<Type> executorsTypes,
+            ExecutorOptions executorOptions)
+        {
+            services.AddTransient<IExecutorFactory, ExecutorFactory>();
+            services.AddTransient<ICommandStorage, ExecutorCommandStorage>(); // TODO: подумати чи потрібно тут Transient чи Singleton
+            services.AddTransient<IBotCommandFactory, ExecutorBotCommandFactory>();
+            services.AddTransient(typeof(IExecutorParametersParser), executorOptions.ParameterParser.ParserType);
+
+            foreach (var type in executorsTypes)
+                services.AddTransient(type);
+
+        }
+
+        private static void addSingletonServices(this IServiceCollection services, ExecutorOptions executorOptions)
+        {
+            services.AddSingleton<ITargetMethodStorage, TargetMethodStorage>();
+            services.AddSingleton<IUserStateStorage, UserStateStorage>();
+            services.AddSingleton(typeof(IUserStateSaver), executorOptions.UserState.SaverType);
         }
     }
 }

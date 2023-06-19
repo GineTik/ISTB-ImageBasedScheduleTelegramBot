@@ -2,6 +2,8 @@
 {
     public enum ScheduleButtons
     {
+        CancelCreateSchedule,
+
         SelectSchedules,
         SelectSchedule,
 

@@ -16,7 +16,7 @@ namespace ISTB.Framework.TelegramBotApplication.Context
                               Update.CallbackQuery?.Message?.Chat?.Id ?? // чомусь в Chat знаходиться користувач який нажав на кнопку, а в From знаходиться чат
                               throw new InvalidDataException("Don't found TelegramUserId");
         public int MessageId => Update.Message?.MessageId ??
-                              Update.CallbackQuery?.Message?.MessageId ?? // чомусь в Chat знаходиться користувач який нажав на кнопку, а в From знаходиться чат
-                              throw new InvalidDataException("Don't found TelegramUserId");
+                              Update.CallbackQuery?.Message?.MessageId ??
+                              throw new InvalidDataException("Don't found MessageId");
     }
 }

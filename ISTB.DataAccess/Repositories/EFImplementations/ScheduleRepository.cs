@@ -35,10 +35,10 @@ namespace ISTB.DataAccess.Repositories.EFImplementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task ChangeNameAsync(string oldName, string newName, long telegramUserId)
+        public async Task ChangeNameAsync(int scheduleId, string newName)
         {
-            var schedule = await GetByNameAsync(oldName, telegramUserId) ??
-                 throw new ArgumentException($"Name({oldName}) or TelegramUserId({telegramUserId}) not correct");
+            var schedule = await GetByIdAsync(scheduleId) ??
+                 throw new ArgumentException($"Schedule id({scheduleId}) not correct");
 
             schedule.Name = newName;
             _context.Schedule.Update(schedule);
