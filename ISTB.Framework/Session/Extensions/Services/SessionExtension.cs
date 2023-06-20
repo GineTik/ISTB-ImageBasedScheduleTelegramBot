@@ -1,7 +1,6 @@
-﻿using ISTB.Framework.Session.Storages.Implementations;
-using ISTB.Framework.Session.Storages.Interfaces;
-using ISTB.Framework.Session.Storages.SessionSaver.Implementations;
-using ISTB.Framework.Session.Storages.SessionSaver.Interfaces;
+﻿using ISTB.Framework.Session.Storage;
+using ISTB.Framework.Session.Storage.Saver;
+using ISTB.Framework.Session.Storage.Saver.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISTB.Framework.Session.Extensions.Services

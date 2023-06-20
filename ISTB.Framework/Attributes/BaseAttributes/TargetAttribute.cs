@@ -5,7 +5,7 @@ namespace ISTB.Framework.Attributes.BaseAttributes
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public abstract class TargetAttribute : Attribute
     {
-        public string UserState { get; set; } = default!;
+        public string? UserState { get; set; }
         public abstract bool IsTarget(Update update);
     }
 }

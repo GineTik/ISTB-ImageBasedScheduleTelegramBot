@@ -1,14 +1,14 @@
-﻿using ISTB.Framework.TelegramBotApplication.Context;
+﻿using ISTB.Framework.TelegramBotApplication.AdvancedBotClient;
+using ISTB.Framework.TelegramBotApplication.Configuration.Middlewares;
+using ISTB.Framework.TelegramBotApplication.Configuration.Middlewares.UpdateContexts;
+using ISTB.Framework.TelegramBotApplication.Context;
 using ISTB.Framework.TelegramBotApplication.Delegates;
-using ISTB.Framework.TelegramBotApplication.Middlewares;
-using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace ISTB.Framework.TelegramBotApplication
 {

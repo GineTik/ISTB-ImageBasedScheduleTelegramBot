@@ -1,5 +1,4 @@
-﻿using ISTB.Framework.Executors.Options;
-using ISTB.Framework.Executors.Parsers.Results;
+﻿using ISTB.Framework.Executors.Routing.Parsers.ParameterParser.Results;
 
 namespace ISTB.Framework.Attributes.ParametersParse
 {
@@ -9,12 +8,12 @@ namespace ISTB.Framework.Attributes.ParametersParse
         public string ArgsLengthIsLess { get; set; }
         public string TypeParseError { get; set; }
 
-        public string? GetActualErrorMessage(ParseErrorStatus status)
+        public string? GetActualErrorMessage(ParseStatus status)
         {
             return status switch
             {
-                ParseErrorStatus.ParseError => TypeParseError,
-                ParseErrorStatus.ArgsLengthIsLess => ArgsLengthIsLess,
+                ParseStatus.ParseError => TypeParseError,
+                ParseStatus.ArgsLengthIsLess => ArgsLengthIsLess,
                 _ => null
             };
         }

@@ -2,11 +2,11 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
-using ISTB.Framework.Executors.Factories.Interfaces;
-using ISTB.Framework.Executors.Storages.Interfaces;
+using ISTB.Framework.Executors.Helpers.Factories.Interfaces;
+using ISTB.Framework.Executors.Routing.Storages.UserState;
 using ISTB.Framework.Session;
+using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
 using ISTB.Framework.TelegramBotApplication.Builders;
-using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
 using ISTB.TelegramBot.Enum.Buttons;
 using ISTB.TelegramBot.Enum.States;
 using Telegram.Bot;
@@ -47,10 +47,10 @@ namespace ISTB.TelegramBot.Executors.Schedule
 
             await _session.SetAsync(scheduleId);
             await _userState.SetAsync(nameof(UserStates.ChangeScheduleName));
+
             await Client.SendTextMessageAsync(
                 "Введіть нову назву групи: ",
                 replyMarkup: new InlineKeyboardBuilder()
-                    //.CallbackButton("Відмінити", $"delete_message {UpdateContext.MessageId}").Build()
                     .CallbackButton("Відмінити", nameof(ScheduleButtons.CancelChangeName))
                     .Build()
             );
@@ -59,7 +59,8 @@ namespace ISTB.TelegramBot.Executors.Schedule
         [TargetCallbacksDatas(nameof(ScheduleButtons.CancelChangeName), UserState = nameof(UserStates.ChangeScheduleName))]
         public async Task CancelChange()
         {
-            await _userState.RemoveAsync(UpdateContext.TelegramUserId);
+            await _userState.RemoveAsync();
+
             await Client.EditMessageTextAsync(
                 UpdateContext.ChatId,
                 UpdateContext.MessageId,
@@ -71,14 +72,15 @@ namespace ISTB.TelegramBot.Executors.Schedule
         [TargetUpdateType(UpdateType.Message, UserState = nameof(UserStates.ChangeScheduleName))]
         public async Task TakeNewScheduleName()
         {
-            await _userState.RemoveAsync(UpdateContext.TelegramUserId);
+            await _userState.RemoveAsync();
+            var schedulId = await _session.GetAndRemoveAsync();
 
             var newName = UpdateContext.Update.Message!.Text;
             if (newName == null)
+            {
+                await Client.SendTextMessageAsync("text field is empty");
                 return;
-
-            var schedulId = await _session.GetAsync();
-            await _session.RemoveAsync();
+            }
 
             await _service.ChangeNameAsync(new ChangeScheduleNameDTO
             {

@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.Session.Storages.Interfaces;
+﻿using ISTB.Framework.Session.Storage;
 
 namespace ISTB.Framework.Session
 {
@@ -11,6 +11,11 @@ namespace ISTB.Framework.Session
         public Session(ISessionDataStorage dataStorage)
         {
             _dataStorage = dataStorage;
+        }
+
+        public async Task<T?> GetAndRemoveAsync()
+        {
+            return await _dataStorage.GetAndRemoveAsync<T>(_key);
         }
 
         public async Task<T?> GetAsync()

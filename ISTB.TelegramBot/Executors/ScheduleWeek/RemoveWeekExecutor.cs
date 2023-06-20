@@ -1,7 +1,7 @@
 ﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
 using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
-using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
+using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
 using ISTB.TelegramBot.Enum.Buttons;
 using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
 
