@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Attributes\ValidateInputDataAttributes\" />
+    <Folder Include="Executors\Storages\Interfaces\" />
   </ItemGroup>
 
 </Project>

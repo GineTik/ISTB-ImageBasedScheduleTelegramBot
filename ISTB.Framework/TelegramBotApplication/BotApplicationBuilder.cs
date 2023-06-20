@@ -1,5 +1,5 @@
-﻿using ISTB.Framework.TelegramBotApplication.Extensions.Services;
-using ISTB.Framework.TelegramBotApplication.Factories.Implementations;
+﻿using ISTB.Framework.TelegramBotApplication.Configuration.Services;
+using ISTB.Framework.TelegramBotApplication.Helpers.Factories.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Polling;

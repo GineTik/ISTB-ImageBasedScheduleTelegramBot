@@ -1,5 +1,5 @@
 ﻿using ISTB.Framework.TelegramBotApplication.Context;
-using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
+using ISTB.Framework.TelegramBotApplication.AdvancedBotClient;
 
 namespace ISTB.Framework.Executors
 {

@@ -1,5 +1,5 @@
 ﻿using ISTB.Framework.MessagePresets.Models;
-using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
+using ISTB.Framework.TelegramBotApplication.AdvancedBotClient;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;

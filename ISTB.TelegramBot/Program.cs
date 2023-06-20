@@ -1,16 +1,16 @@
 ﻿using ISTB.BusinessLogic.AutoMapper.Profiles;
+using ISTB.Framework.Executors.Configuration.Middleware.TargetExecutor;
+using ISTB.Framework.Executors.Configuration.Services;
+using ISTB.Framework.Session.Extensions.Services;
 using ISTB.Framework.TelegramBotApplication;
-using ISTB.Framework.TelegramBotApplication.Extensions.Middlwares;
-using ISTB.Framework.TelegramBotApplication.Extensions.ReceiverOption;
-using ISTB.Framework.Executors.Extensions.Middlewares;
-using ISTB.Framework.Executors.Extensions.Services;
+using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
+using ISTB.Framework.TelegramBotApplication.Configuration.Middlewares.CatchException;
+using ISTB.Framework.TelegramBotApplication.Configuration.ReceiverOption;
 using ISTB.TelegramBot.Extensions.Services;
+using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Telegram.Bot.Types.Enums;
-using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
-using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
-using ISTB.Framework.Session.Extensions.Services;
 
 namespace ISTB.TelegramBot
 {
@@ -40,9 +40,11 @@ namespace ISTB.TelegramBot
                 await updateContext.Client.SendTextMessageAsync(message);
                 Console.WriteLine(exception.ToString());
             });
+
             app.UseExecutors();
-            app.Use(async (UpdateContext, _) => 
-                await UpdateContext.Client.SendTextMessageAsync("Мені нема чим тобі відповіти")
+
+            app.Use(async (updateContext, _) => 
+                await updateContext.Client.SendTextMessageAsync("Мені нема чим тобі відповіти")
             ); 
             app.Run();
 

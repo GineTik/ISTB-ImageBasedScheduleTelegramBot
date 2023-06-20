@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.TelegramBotApplication.TelegramBotClientInheritors;
+﻿using ISTB.Framework.TelegramBotApplication.AdvancedBotClient;
 using Telegram.Bot.Types;
 
 namespace ISTB.Framework.TelegramBotApplication.Context

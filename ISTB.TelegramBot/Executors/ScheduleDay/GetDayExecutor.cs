@@ -2,8 +2,8 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
+using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
 using ISTB.Framework.TelegramBotApplication.Builders;
-using ISTB.Framework.TelegramBotApplication.Extensions.AdvancedTelegramBotClient;
 using ISTB.TelegramBot.Enum.Buttons;
 using Telegram.Bot;
 
