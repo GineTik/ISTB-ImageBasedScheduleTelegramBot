@@ -2,27 +2,24 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.ParametersParse;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
+using ISTB.Framework.Attributes.ValidateInputDataAttributes.UpdateDataNotNull;
 using ISTB.Framework.Executors;
-using ISTB.Framework.Executors.Routing.Storages.UserState.Saver;
-using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
-using ISTB.Framework.TelegramBotApplication.Builders;
+using ISTB.Framework.Executors.Storages.UserState;
 using ISTB.Framework.TelegramBotApplication.Context;
-using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.Enum.States;
-using Telegram.Bot;
+using ISTB.TelegramBot.Views.Schedule;
 using Telegram.Bot.Types.Enums;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
-    public class CreateScheduleExecutor : Executor
+    public sealed class CreateScheduleExecutor : Executor
     {
         private readonly IScheduleService _service;
-        private readonly IUserStateSaver _userStateSaver;
+        private readonly IUserStateStorage _userStateStorage;
 
-        public CreateScheduleExecutor(IScheduleService service, IUserStateSaver userStateSaver)
+        public CreateScheduleExecutor(IScheduleService service, IUserStateStorage stateStorage)
         {
             _service = service;
-            _userStateSaver = userStateSaver;
+            _userStateStorage = stateStorage;
         }
 
         [TargetCommands("create_schedule, cs")]
@@ -31,49 +28,38 @@ namespace ISTB.TelegramBot.Executors.Schedule
         {
             if (scheduleName == null)
             {
-                await _userStateSaver.SaveAsync(UpdateContext.TelegramUserId, nameof(UserStates.CreateSchedule));
-                await Client.SendTextMessageAsync(
-                    "Ведіть назву розкладу", 
-                    replyMarkup: new InlineKeyboardBuilder()
-                        .CallbackButton("Я передумав", nameof(ScheduleButtons.CancelCreateSchedule))
-                        .Build()
-                );
+                await _userStateStorage.SetAsync(nameof(TakeNewName));
+                await ExecuteAsync<CreateScheduleView>(v => v.InputNewScheduleName());
             }
             else
             {
-                await CreateByName(scheduleName);
+                await createWithName(scheduleName);
             }
         }
 
-        [TargetUpdateType(UpdateType.Message, UserState = nameof(UserStates.CreateSchedule))]
-        public async Task CreateByNameTarget()
+        [TargetUpdateType(UpdateType.Message, UserStates = nameof(TakeNewName))]
+        [UpdateTextNotNull(ErrorMessage = "Ви маєте надіслати текст")]
+        public async Task TakeNewName()
         {
-            await _userStateSaver.RemoveAsync(UpdateContext.TelegramUserId);
-            await CreateByName(UpdateContext.Update.Message!.Text!);
+            await _userStateStorage.RemoveAsync();
+            await createWithName(UpdateContext.Update.Message!.Text!);
         }
 
-        public async Task CreateByName(string scheduleName)
+        [TargetCallbacksDatas(nameof(CancelCreateSchedule), UserStates = nameof(TakeNewName))]
+        public async Task CancelCreateSchedule()
+        {
+            await _userStateStorage.RemoveAsync();
+            await ExecuteAsync<CreateScheduleView>(v => v.CancelCreate());
+        }
+
+        private async Task createWithName(string scheduleName)
         {
             var schedule = await _service.CreateAsync(new CreateScheduleDTO
             {
                 Name = scheduleName,
                 TelegramUserId = UpdateContext.TelegramUserId
             });
-
-            await Client.SendTextMessageAsync("Створенна нова група з назвою: " + schedule.Name);
-        }
-
-        [TargetCallbacksDatas(nameof(ScheduleButtons.CancelCreateSchedule), UserState = nameof(UserStates.CreateSchedule))]
-        public async Task CancelCreateSchedule()
-        {
-            await _userStateSaver.RemoveAsync(UpdateContext.TelegramUserId);
-
-            await Client.EditMessageTextAsync(
-                UpdateContext.ChatId,
-                UpdateContext.MessageId,
-                "Ви передумали",
-                replyMarkup: null
-            );
+            await ExecuteAsync<CreateScheduleView>(v => v.ScheduleCreated(schedule.Name));
         }
     }
 }

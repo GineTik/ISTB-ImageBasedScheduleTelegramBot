@@ -1,12 +1,12 @@
-﻿using ISTB.Framework.Executors.Routing.Parsers.ParameterParser.Results;
+﻿using ISTB.Framework.Executors.Parsers.ExecutorParameters.Results;
 
 namespace ISTB.Framework.Attributes.ParametersParse
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class ParseErrorMessagesAttribute : Attribute
     {
-        public string ArgsLengthIsLess { get; set; }
-        public string TypeParseError { get; set; }
+        public string? ArgsLengthIsLess { get; set; }
+        public string? TypeParseError { get; set; }
 
         public string? GetActualErrorMessage(ParseStatus status)
         {

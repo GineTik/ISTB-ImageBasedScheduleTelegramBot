@@ -2,37 +2,31 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
-using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
-using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
+using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.TelegramBot.Executors.Schedule;
 
 namespace ISTB.TelegramBot.Executors.ScheduleWeek
 {
     public class CreateWeekExecutor : Executor
     {
         private readonly IScheduleWeekService _service;
-        private readonly SchedulePresets _presets;
 
-        public CreateWeekExecutor(IScheduleWeekService service, SchedulePresets presets)
+        public CreateWeekExecutor(IScheduleWeekService service)
         {
             _service = service;
-            _presets = presets;
         }
 
-        [TargetCallbacksDatas(nameof(WeekButtons.CreateScheduleWeek))]
-        public async Task CreateWeek(int scheduleId)
+        [TargetCallbacksDatas(nameof(CreateWeek))]
+        public async Task CreateWeek(int scheduleId, int weekPosition)
         {
             await _service.CreateWeekAsync(new CreateScheduleWeekDTO
             { 
                 ScheduleId = scheduleId,
-                TelegramUserId = UpdateContext.TelegramUserId
+                TelegramUserId = UpdateContext.TelegramUserId,
+                Position = weekPosition
             });
 
-            var preset = await _presets.GetScheduleInfoAsync(scheduleId);
-            await Client.EditMessageResponseAsync(
-                UpdateContext.Update.CallbackQuery!.Message!.MessageId,
-                preset!
-            );
+            await ExecuteAsync<GetScheduleExecutor>(e => e.ShowSchedule(scheduleId));
         }
     }
 }

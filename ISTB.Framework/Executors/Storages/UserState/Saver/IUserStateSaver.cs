@@ -1,0 +1,9 @@
+﻿namespace ISTB.Framework.Executors.Storages.UserState.Saver
+{
+    public interface IUserStateSaver
+    {
+        Task SaveAsync(long userId, string state);
+        Task<string?> LoadAsync(long userId);
+        Task RemoveAsync(long userId);
+    }
+}

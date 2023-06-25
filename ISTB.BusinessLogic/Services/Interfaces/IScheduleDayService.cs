@@ -4,6 +4,10 @@ namespace ISTB.BusinessLogic.Services.Interfaces
 {
     public interface IScheduleDayService
     {
-        Task<ScheduleDayDTO> GetByDayNumber(GetByDayNumberDTO dto);
+        Task<ScheduleDayDTO> GetByIdAsync(int id);
+        Task<ScheduleDayDTO> GetTodayByScheduleIdAsync(int id);
+        Task<ScheduleDayDTO> GetByDayNumberAsync(GetByDayNumberDTO dto);
+        Task EditPhotoAsync(EditPhotoIdDTO dto);
+        Task EditDescriptionAsync(EditDescriptionDTO dto);
     }
 }

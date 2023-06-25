@@ -2,10 +2,10 @@
 
 namespace ISTB.Framework.Attributes.BaseAttributes
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Method)]
     public abstract class ValidateInputDataAttribute : Attribute
     {
-        public string ErrorMessage { get; set; }
-        public abstract Task<bool> ValidateAsync(UpdateContext updateContext);
+        public string ErrorMessage { get; set; } = default!;
+        public abstract Task<bool> ValidateAsync(UpdateContext updateContext, IServiceProvider provider);
     }
 }

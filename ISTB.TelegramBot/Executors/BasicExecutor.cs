@@ -1,15 +1,12 @@
-﻿using ISTB.Framework.Attributes.ParametersParse;
-using ISTB.Framework.Attributes.TargetExecutorAttributes;
+﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
 using ISTB.Framework.Executors.Storages.Command;
 using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
-using ISTB.Framework.TelegramBotApplication.Builders;
-using ISTB.TelegramBot.Enum.Buttons;
 using Telegram.Bot;
 
 namespace ISTB.TelegramBot.Executors
 {
-    public class BasicExecutor : Executor
+    public sealed class BasicExecutor : Executor
     {
         private readonly ICommandStorage _commandStorage;
 
@@ -23,34 +20,6 @@ namespace ISTB.TelegramBot.Executors
         {
             await Client.SendTextMessageAsync("Success");
             await Client.SetMyCommandsAsync(_commandStorage.Commands);
-        }
-
-        [TargetCallbacksDatas("confirm_act")]
-        [ParametersSeparator(" | ")]
-        public async Task ConfirmYourAct(string targetCallbackData, string data)
-        {
-            await Client.AnswerCallbackQueryAsync();
-            await Client.SendTextMessageAsync(
-                "Ви впевнені?",
-                replyMarkup: new InlineKeyboardBuilder()
-                    .CallbackButton("Так", $"{targetCallbackData} {data}")
-                    .CallbackButton("Ні", "delete_message").EndRow()
-                    .Build()
-            );
-        }
-
-        [TargetCallbacksDatas("delete_message")]
-        public async Task DeleteMessage(int? messageIdToDeleted)
-        {
-            await Client.DeleteCallbackQueryMessageAsync();
-
-            if (messageIdToDeleted != null)
-            {
-                await Client.DeleteMessageAsync(
-                    UpdateContext.ChatId,
-                    messageIdToDeleted.Value
-                );
-            }
         }
     }
 }

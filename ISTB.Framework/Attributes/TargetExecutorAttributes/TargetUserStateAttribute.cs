@@ -5,9 +5,9 @@ namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
     public class TargetUserStateAttribute : TargetAttribute
     {
-        public TargetUserStateAttribute(string userState)
+        public TargetUserStateAttribute(string userStates)
         {
-            UserState = userState;
+            UserStates = userStates;
         }
 
         public override bool IsTarget(Update update)

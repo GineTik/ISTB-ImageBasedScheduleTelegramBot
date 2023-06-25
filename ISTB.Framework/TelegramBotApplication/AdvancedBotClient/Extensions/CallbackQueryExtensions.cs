@@ -1,5 +1,4 @@
-﻿using ISTB.Framework.TelegramBotApplication.AdvancedBotClient;
-using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
+﻿using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -9,18 +8,29 @@ namespace ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions
 {
     public static class CallbackQueryExtensions
     {
-        public static async Task DeleteCallbackQueryMessageAsync(this IAdvancedTelegramBotClient client)
+        public static async Task DeleteMessageAsync(this IAdvancedTelegramBotClient client)
         {
             if (client.UpdateContext.Update.Type != UpdateType.CallbackQuery)
             {
                 throw new InvalidOperationException("UpdateType is not CallbackQuery");
             }
 
-            await client.AnswerCallbackQueryAsync();
-
             await client.DeleteMessageAsync(
                 client.UpdateContext.ChatId,
                 client.UpdateContext.Update.CallbackQuery!.Message!.MessageId
+            );
+        }
+
+        public static async Task DeleteMessageAsync(this IAdvancedTelegramBotClient client, int messageId)
+        {
+            if (client.UpdateContext.Update.Type != UpdateType.CallbackQuery)
+            {
+                throw new InvalidOperationException("UpdateType is not CallbackQuery");
+            }
+
+            await client.DeleteMessageAsync(
+                client.UpdateContext.ChatId,
+                messageId
             );
         }
 

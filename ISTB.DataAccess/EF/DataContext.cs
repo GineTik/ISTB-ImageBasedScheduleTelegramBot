@@ -18,6 +18,9 @@ namespace ISTB.DataAccess.EF
             builder.Entity<Role>().HasData(
                 new Role { Id = 1, Name = "Owner" });
 
+            builder.Entity<User>().HasData(
+                new User { Id = 1, TelegramUserId = 502351239, RoleId = 1 });
+
             builder.Entity<User>()
                 .HasIndex(user => user.TelegramUserId)
                 .IsUnique(true);

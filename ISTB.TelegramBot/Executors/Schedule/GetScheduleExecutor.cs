@@ -1,102 +1,45 @@
-﻿using ISTB.BusinessLogic.Services.Interfaces;
+﻿using ISTB.BusinessLogic.DTOs.Schedule;
+using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
-using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
-using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
-using ISTB.Framework.TelegramBotApplication.Builders;
-using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
-using Telegram.Bot;
-using Telegram.Bot.Types.Enums;
+using ISTB.Framework.TelegramBotApplication.Context;
+using ISTB.TelegramBot.Views.Schedule;
 
 namespace ISTB.TelegramBot.Executors.Schedule
 {
     public class GetScheduleExecutor : Executor
     {
         private readonly IScheduleService _service;
-        private readonly SchedulePresets _presets;
 
-        public GetScheduleExecutor(IScheduleService service, SchedulePresets presets)
+        public GetScheduleExecutor(IScheduleService service)
         {
             _service = service;
-            _presets = presets;
         }
 
         [TargetCommands("schedules")]
-        [TargetCallbacksDatas(nameof(ScheduleButtons.SelectSchedules))]
-        public async Task GetMySchedule()
-        {
-            var preset = await _presets.GetSchedulesAsync();
-
-            if (UpdateContext.Update.Type == UpdateType.Message)
-            {
-                await Client.SendMessageResponseAsync(preset);
-            }
-            else
-            {
-                var messageId = UpdateContext.MessageId;
-                await Client.EditMessageResponseAsync(messageId, preset);
-            }
-        }
-
-        [TargetCallbacksDatas(nameof(ScheduleButtons.SelectSchedule))]
-        public async Task SelectSchedule(int scheduleId)
-        {
-            await Client.AnswerCallbackQueryAsync();
-            var preset = 
-                await _presets.GetScheduleInfoAsync(scheduleId) ??
-                await _presets.GetSchedulesAsync();
-
-            await Client.EditMessageResponseAsync(
-                UpdateContext.Update.CallbackQuery!.Message!.MessageId,
-                preset
-            );
-        }
-
-        [TargetCallbacksDatas(nameof(ScheduleButtons.ScheduleSettings))]
-        public async Task ScheduleSettings(int scheduleId)
-        {
-            await Client.AnswerCallbackQueryAsync();
-           
-            var messageId = UpdateContext.MessageId;
-            var markup = new InlineKeyboardBuilder()
-                //.CallbackButton("Видалити розклад", $"confirm_act {nameof(ScheduleButtons.RemoveSchedule)} | {scheduleId} {messageId}").EndRow()
-                .CallbackButton("<<< Назад", $"{nameof(ScheduleButtons.SelectSchedule)} {scheduleId}").EndRow()
-                .Build();
-            
-            await Client.EditMessageReplyMarkupAsync(
-                UpdateContext.ChatId,
-                messageId,
-                replyMarkup: markup
-            );
-        }
-
-        public async Task SendSchedules(string text, ScheduleButtons button)
+        [TargetCallbacksDatas(nameof(ShowMySchedules))]
+        public async Task ShowMySchedules()
         {
             var schedules = await _service.GetListByTelegramUserIdAsync(UpdateContext.TelegramUserId);
+            await ExecuteAsync<ShowScheduleView>(v => v.ShowMySchedules(schedules));
+        }
 
-            if (schedules.Count == 0)
+        [TargetCallbacksDatas(nameof(ShowSchedule))]
+        public async Task ShowSchedule(int scheduleId)
+        {
+            var schedule = await _service.GetWithWeeksByIdAsync(new GetScheduleByIdDTO()
             {
-                await Client.SendTextMessageAsync(
-                    "Ви ще не створили розклад"
-                );
+                Id = scheduleId,
+                TelegramUserId = UpdateContext.TelegramUserId,
+            });
+
+            if (schedule == null)
+            {
+                await ShowMySchedules();
             }
             else
             {
-                var markup = new InlineKeyboardBuilder()
-                    .CallbackButtonList(
-                        schedules,
-                        (s, _) => s.Name,
-                        (s, _) => $"{button} {s.Id}",
-                        rowCount: 2
-                     )
-                    .CallbackButton("Відмінити", $"delete_message {UpdateContext.MessageId}")
-                    .Build();
-
-                await Client.SendTextMessageAsync(
-                    text,
-                    replyMarkup: markup
-                );
+                await ExecuteAsync<ShowScheduleView>(v => v.ShowSchedule(schedule));
             }
         }
     }

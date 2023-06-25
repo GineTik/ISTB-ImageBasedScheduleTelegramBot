@@ -4,5 +4,6 @@
     {
         public int ScheduleId { get; set; }
         public long TelegramUserId { get; set; }
+        public int Position { get; set; }
     }
 }

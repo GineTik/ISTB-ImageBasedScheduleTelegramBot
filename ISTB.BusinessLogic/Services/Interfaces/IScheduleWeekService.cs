@@ -7,5 +7,7 @@ namespace ISTB.BusinessLogic.Services.Interfaces
         Task<ScheduleWeekDTO> CreateWeekAsync(CreateScheduleWeekDTO dto);
         Task<ScheduleWeekWithDaysDTO?> GetWeekByIdAsync(int weekId);
         Task<IEnumerable<ScheduleWeekDTO>> GetWeeks(int scheduleId);
+        Task<ScheduleWeekDTO> GetTodayWeekAsync(int scheduleId);
+        Task ChooseWeekLikeCurrentAsync(ChooseCurrentWeekDTO dto);
     }
 }

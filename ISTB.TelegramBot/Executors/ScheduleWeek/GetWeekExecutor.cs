@@ -1,33 +1,36 @@
-﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
+﻿using ISTB.BusinessLogic.Services.Interfaces;
+using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
-using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
-using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
+using ISTB.Framework.Executors.Helpers.Factories.Executors;
+using ISTB.TelegramBot.Executors.Schedule;
+using ISTB.TelegramBot.Views.ScheduleWeek;
 
 namespace ISTB.TelegramBot.Executors.ScheduleWeek
 {
     public class GetWeekExecutor : Executor
     {
-        private readonly SchedulePresets _presets;
+        private readonly IScheduleWeekService _weekService;
+        private readonly IExecutorFactory _factory;
 
-        public GetWeekExecutor(SchedulePresets presets)
+        public GetWeekExecutor(IScheduleWeekService weekService, IExecutorFactory factory)
         {
-            _presets = presets;
+            _weekService = weekService;
+            _factory = factory;
         }
 
-        [TargetCallbacksDatas(nameof(WeekButtons.SelectScheduleWeek))]
-        public async Task GetScheduleWeek(int weekId)
+        [TargetCallbacksDatas(nameof(ShowWeek))]
+        public async Task ShowWeek(int weekId)
         {
-            var messageId = UpdateContext.Update.CallbackQuery!.Message!.MessageId;
+            var week = await _weekService.GetWeekByIdAsync(weekId);
 
-            var preset =
-                await _presets.GetScheduleWeekInfoAsync(weekId, messageId) ??
-                await _presets.GetSchedulesAsync();
-
-            await Client.EditMessageResponseAsync(
-                messageId,
-                preset
-            );
+            if (week == null)
+            {
+                await ExecuteAsync<GetScheduleExecutor>(e => e.ShowMySchedules());
+            }
+            else
+            {
+                await ExecuteAsync<ShowWeekView>(v => v.ShowWeek(week));
+            }
         }
     }
 }

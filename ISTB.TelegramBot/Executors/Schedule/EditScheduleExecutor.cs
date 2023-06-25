@@ -1,14 +1,12 @@
 ﻿using ISTB.BusinessLogic.DTOs.Schedule;
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
+using ISTB.Framework.Attributes.ValidateInputDataAttributes.UpdateDataNotNull;
 using ISTB.Framework.Executors;
-using ISTB.Framework.Executors.Helpers.Factories.Interfaces;
-using ISTB.Framework.Executors.Routing.Storages.UserState;
+using ISTB.Framework.Executors.Storages.UserState;
 using ISTB.Framework.Session;
 using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
-using ISTB.Framework.TelegramBotApplication.Builders;
-using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.Enum.States;
+using ISTB.TelegramBot.Views.Schedule;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -17,70 +15,49 @@ namespace ISTB.TelegramBot.Executors.Schedule
     public class EditScheduleExecutor : Executor
     {
         private readonly IScheduleService _service;
-        private readonly IExecutorFactory _factory;
         private readonly Session<int> _session;
         private readonly IUserStateStorage _userState;
 
-        public EditScheduleExecutor(IScheduleService service, IExecutorFactory factory, Session<int> session,
+        public EditScheduleExecutor(IScheduleService service, Session<int> session,
             IUserStateStorage userStateStorage)
         {
             _service = service;
-            _factory = factory;
             _session = session;
             _userState = userStateStorage;
         }
 
         [TargetCommands("change_schedule_name", Description = "Змінити назву розкладу")]
-        public async Task ChangeName()
+        public async Task EditName()
         {
-            var executor = _factory.CreateExecutor<GetScheduleExecutor>();
-            await executor.SendSchedules(
-                "Виберіть розклад, ім'я якого ви хочете змінити", 
-                ScheduleButtons.SelectScheduleToChangeName
-            );
+            var schedules = await _service.GetListByTelegramUserIdAsync(UpdateContext.TelegramUserId);
+            await ExecuteAsync<EditScheduleView>(v => v.ChooseScheduleToEdit(schedules));
         }
 
-        [TargetCallbacksDatas(nameof(ScheduleButtons.SelectScheduleToChangeName))]
-        public async Task SelectScheduleToChangeName(int scheduleId)
+        [TargetCallbacksDatas(nameof(TakeChoseSchedule))]
+        public async Task TakeChoseSchedule(int scheduleId)
         {
-            await Client.DeleteCallbackQueryMessageAsync();
+            await Client.DeleteMessageAsync();
 
             await _session.SetAsync(scheduleId);
-            await _userState.SetAsync(nameof(UserStates.ChangeScheduleName));
+            await _userState.SetAsync(nameof(TakeNewScheduleName));
 
-            await Client.SendTextMessageAsync(
-                "Введіть нову назву групи: ",
-                replyMarkup: new InlineKeyboardBuilder()
-                    .CallbackButton("Відмінити", nameof(ScheduleButtons.CancelChangeName))
-                    .Build()
-            );
+            await ExecuteAsync<EditScheduleView>(v => v.InputNewName());
         }
 
-        [TargetCallbacksDatas(nameof(ScheduleButtons.CancelChangeName), UserState = nameof(UserStates.ChangeScheduleName))]
-        public async Task CancelChange()
+        [TargetCallbacksDatas(nameof(CancelEditName), UserStates = nameof(TakeNewScheduleName))]
+        public async Task CancelEditName()
         {
             await _userState.RemoveAsync();
-
-            await Client.EditMessageTextAsync(
-                UpdateContext.ChatId,
-                UpdateContext.MessageId,
-                "Ви відмінили змінення назви розкладу",
-                replyMarkup: null
-            );
+            await ExecuteAsync<EditScheduleView>(v => v.CancelEditName());
         }
 
-        [TargetUpdateType(UpdateType.Message, UserState = nameof(UserStates.ChangeScheduleName))]
+        [TargetUpdateType(UpdateType.Message, UserStates = nameof(TakeNewScheduleName))]
+        [UpdateTextNotNull(ErrorMessage = "Назва має бути у виді тексту")]
         public async Task TakeNewScheduleName()
         {
             await _userState.RemoveAsync();
             var schedulId = await _session.GetAndRemoveAsync();
-
-            var newName = UpdateContext.Update.Message!.Text;
-            if (newName == null)
-            {
-                await Client.SendTextMessageAsync("text field is empty");
-                return;
-            }
+            var newName = UpdateContext.Update.Message!.Text!;
 
             await _service.ChangeNameAsync(new ChangeScheduleNameDTO
             {
@@ -89,7 +66,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
                 TelegramUserId = UpdateContext.TelegramUserId
             });
 
-            await Client.SendTextMessageAsync($"Розклад змінено на {newName}");
+            await ExecuteAsync<EditScheduleView>(v => v.ScheduleNameEdited(newName));
         }
     }
 }
