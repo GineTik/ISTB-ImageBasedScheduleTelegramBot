@@ -28,11 +28,11 @@ namespace ISTB.Framework.Executors.Storages.TargetMethod
 
         public async Task<MethodInfo?> GetMethodInfoToExecuteAsync(UpdateContext actualUpdateContext)
         {
-            var userState = await _stateStorage.GetAsync(actualUpdateContext.TelegramUserId);
+            var userStates = await _stateStorage.GetAsync(actualUpdateContext.TelegramUserId);
             
             var methods = _routes.GetTargetMethodInfos(
                 actualUpdateContext.Update.Type,
-                userState
+                userStates
             );
 
             var targetMethod = methods.FirstOrDefault(method => method

@@ -50,16 +50,16 @@ namespace ISTB.Framework.Executors.Storages.TargetMethod.RouteDictionaries
             }
         }
 
-        public IEnumerable<TargetMethodInfo> GetTargetMethodInfos(UpdateType updateType, string userState)
+        public IEnumerable<TargetMethodInfo> GetTargetMethodInfos(UpdateType updateType, IEnumerable<string> states)
         {
-            var methods = this[updateType].GetTargetMethodInfos(userState);
+            var methods = this[updateType].GetTargetMethodInfos(states);
 
             if (updateType == UpdateType.Unknown)
             {
                 return methods;
             }
 
-            var unknownMethods = this[UpdateType.Unknown].GetTargetMethodInfos(userState);
+            var unknownMethods = this[UpdateType.Unknown].GetTargetMethodInfos(states);
             return methods.Concat(unknownMethods);
         }
 

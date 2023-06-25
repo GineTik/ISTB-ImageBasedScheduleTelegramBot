@@ -18,6 +18,7 @@ namespace ISTB.TelegramBot.Extensions.Services
             services.AddTransient<IScheduleWeekRepository, ScheduleWeekRepository>();
             services.AddTransient<IScheduleDayRepository, ScheduleDayRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
 
             return services;
         }

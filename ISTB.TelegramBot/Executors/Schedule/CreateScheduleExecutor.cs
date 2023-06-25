@@ -38,7 +38,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetUpdateType(UpdateType.Message, UserStates = nameof(TakeNewName))]
-        [UpdateTextNotNull(ErrorMessage = "Ви маєте надіслати текст")]
+        [UpdateMessageTextNotNull(ErrorMessage = "Ви маєте надіслати текст")]
         public async Task TakeNewName()
         {
             await _userStateStorage.RemoveAsync();

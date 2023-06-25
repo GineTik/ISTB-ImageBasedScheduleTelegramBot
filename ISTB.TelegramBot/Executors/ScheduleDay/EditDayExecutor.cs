@@ -57,7 +57,7 @@ namespace ISTB.TelegramBot.Executors.ScheduleDay
         }
 
         [TargetUpdateType(UpdateType.Message, UserStates = nameof(EditDescription))]
-        [UpdateTextNotNull(ErrorMessage = "Ви маєте надіслати текст")]
+        [UpdateMessageTextNotNull(ErrorMessage = "Ви маєте надіслати текст")]
         public async Task TakeDescription()
         {
             var description = UpdateContext.Update.Message!.Text!;

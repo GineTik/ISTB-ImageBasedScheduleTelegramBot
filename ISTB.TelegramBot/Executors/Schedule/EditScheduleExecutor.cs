@@ -52,7 +52,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
         }
 
         [TargetUpdateType(UpdateType.Message, UserStates = nameof(TakeNewScheduleName))]
-        [UpdateTextNotNull(ErrorMessage = "Назва має бути у виді тексту")]
+        [UpdateMessageTextNotNull(ErrorMessage = "Назва має бути у виді тексту")]
         public async Task TakeNewScheduleName()
         {
             await _userState.RemoveAsync();

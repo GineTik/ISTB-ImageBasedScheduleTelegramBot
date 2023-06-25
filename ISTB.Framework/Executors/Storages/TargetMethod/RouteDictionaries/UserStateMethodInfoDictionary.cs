@@ -34,10 +34,17 @@ namespace ISTB.Framework.Executors.Storages.TargetMethod.RouteDictionaries
             }
         }
 
-        public IEnumerable<TargetMethodInfo> GetTargetMethodInfos(string userState)
+        public IEnumerable<TargetMethodInfo> GetTargetMethodInfos(IEnumerable<string> userStates)
         {
-            TryGetValue(userState, out var methods);
-            return methods ?? new List<TargetMethodInfo>();
+            foreach (var state in userStates)
+            {
+                TryGetValue(state, out var methods);
+
+                foreach (var method in methods ?? new List<TargetMethodInfo>())
+                {
+                    yield return method;
+                }
+            }
         }
     }
 }

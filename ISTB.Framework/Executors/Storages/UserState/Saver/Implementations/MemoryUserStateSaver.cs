@@ -2,14 +2,14 @@
 {
     public class MemoryUserStateSaver : IUserStateSaver
     {
-        private readonly Dictionary<long, string> _usersStates;
+        private readonly Dictionary<long, IEnumerable<string>> _usersStates;
 
         public MemoryUserStateSaver()
         {
             _usersStates = new();
         }
 
-        public async Task<string?> LoadAsync(long userId)
+        public async Task<IEnumerable<string>?> LoadAsync(long userId)
         {
             return await Task.Run(() =>
             {
@@ -25,7 +25,7 @@
             await Task.Run(() => _usersStates.Remove(userId));
         }
 
-        public async Task SaveAsync(long userId, string state)
+        public async Task SaveAsync(long userId, IEnumerable<string> state)
         {
             await Task.Run(() =>
             {

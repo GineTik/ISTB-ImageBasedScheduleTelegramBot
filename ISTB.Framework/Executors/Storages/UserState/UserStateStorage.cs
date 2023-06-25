@@ -18,11 +18,21 @@ namespace ISTB.Framework.Executors.Storages.UserState
             _options = options.Value;
         }
 
-        public async Task<string> GetAsync(long? telegramUserId = null)
+        public async Task AddAsync(string state, long? telegramUserId = null)
         {
             telegramUserId ??= _updateContext.TelegramUserId;
-            var state = await _saver.LoadAsync(telegramUserId.Value);
-            return state ?? _options.DefaultUserState;
+            
+            var userStates = await GetAsync(telegramUserId);
+            userStates.Concat(new[] { state });
+
+            await SetRangeAsync(userStates, telegramUserId);
+        }
+
+        public async Task<IEnumerable<string>> GetAsync(long? telegramUserId = null)
+        {
+            telegramUserId ??= _updateContext.TelegramUserId;
+            var userStates = await _saver.LoadAsync(telegramUserId.Value);
+            return userStates ?? new[] { _options.DefaultUserState };
         }
 
         public async Task RemoveAsync(long? telegramUserId = null)
@@ -31,10 +41,21 @@ namespace ISTB.Framework.Executors.Storages.UserState
             await _saver.RemoveAsync(telegramUserId.Value);
         }
 
-        public async Task SetAsync(string status, long? telegramUserId = null)
+        public async Task SetAsync(string state, long? telegramUserId = null, bool withDefaultState = false)
+        {
+            await SetRangeAsync(new[] { state }, telegramUserId, withDefaultState);
+        }
+
+        public async Task SetRangeAsync(IEnumerable<string> states, long? telegramUserId = null, bool withDefaultState = false)
         {
             telegramUserId ??= _updateContext.TelegramUserId;
-            await _saver.SaveAsync(telegramUserId.Value, status);
+
+            if (withDefaultState == true)
+            {
+                states = states.Concat(new List<string> { _options.DefaultUserState });
+            }
+
+            await _saver.SaveAsync(telegramUserId.Value, states);
         }
     }
 }
