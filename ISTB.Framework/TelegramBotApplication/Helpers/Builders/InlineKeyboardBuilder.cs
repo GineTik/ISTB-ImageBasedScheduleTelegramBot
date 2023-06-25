@@ -1,4 +1,6 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using ISTB.Framework.Executors;
+using System.Linq.Expressions;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ISTB.Framework.TelegramBotApplication.Helpers.Builders
 {
@@ -11,7 +13,6 @@ namespace ISTB.Framework.TelegramBotApplication.Helpers.Builders
         {
             _buttons = new List<List<InlineKeyboardButton>>();
             _currentRow = new List<InlineKeyboardButton>();
-
         }
 
         public InlineKeyboardBuilder ButtonList(IEnumerable<InlineKeyboardButton> buttons, int rowCount = 1)
@@ -52,6 +53,18 @@ namespace ISTB.Framework.TelegramBotApplication.Helpers.Builders
             _currentRow.Add(InlineKeyboardButton.WithCallbackData(text, callback));
             return this;
         }
+
+        //public InlineKeyboardBuilder ExecutorButton(string text, Expression<Action<TExecutor>> method, string args)
+        //{
+        //    if (method.Body.NodeType != ExpressionType.Call)
+        //        throw new ArgumentNullException("method.Body.NodeType != ExpressionType.Call");
+
+        //    var info = (MethodCallExpression)method.Body;
+        //    var methodName = info.Method.Name;
+        //    CallbackButton(text, $"{methodName} {args}");
+
+        //    return this;
+        //}
 
         public InlineKeyboardBuilder Button(InlineKeyboardButton button)
         {

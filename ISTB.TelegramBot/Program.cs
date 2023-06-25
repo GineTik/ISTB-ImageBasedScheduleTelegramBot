@@ -1,15 +1,15 @@
 ﻿using ISTB.BusinessLogic.AutoMapper.Profiles;
+using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Executors.Configuration.Middleware.TargetExecutor;
+using ISTB.Framework.Executors.Configuration.Options;
 using ISTB.Framework.Executors.Configuration.Services;
+using ISTB.Framework.Executors.Storages.UserState;
 using ISTB.Framework.Session.Extensions.Services;
 using ISTB.Framework.TelegramBotApplication;
-using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
-using ISTB.Framework.TelegramBotApplication.Configuration.Middlewares.CatchException;
 using ISTB.Framework.TelegramBotApplication.Configuration.ReceiverOption;
+using ISTB.TelegramBot.Extensions.Middlewares;
 using ISTB.TelegramBot.Extensions.Services;
-using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 using Telegram.Bot.Types.Enums;
 
 namespace ISTB.TelegramBot
@@ -19,33 +19,38 @@ namespace ISTB.TelegramBot
         public static void Main(string[] args)
         {
             var builder = new BotApplicationBuilder();
+            
             builder.ReceiverOptions.ConfigureAllowedUpdates(UpdateType.Message, UpdateType.CallbackQuery);
 
             builder.Services.AddData(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(ScheduleProfile));
             builder.Services.AddServices();
-            builder.Services.AddTransient<SchedulePresets>();
 
             builder.Services.AddExecutors();
             builder.Services.AddSessions();
 
             var app = builder.Build();
-            app.UseCatchException(async (updateContext, exception) =>
-            {
-                var message = exception switch
-                {
-                    TargetParameterCountException => "Ви забули ввести деякі параметри",
-                    _ => exception.Message
-                };
-                await updateContext.Client.SendTextMessageAsync(message);
-                Console.WriteLine(exception.ToString());
-            });
 
+            //app.Use(async (provider, updateContext, next) => {
+            //    var userService = provider.GetRequiredService<IUserService>();
+            //    var userStateStorage = provider.GetRequiredService<IUserStateStorage>();
+            //    var userStateOptions = provider.GetRequiredService<UserStateOptions>();
+
+            //    var role = await userService.GetRoleByTelegramUserIdAsync(updateContext.TelegramUserId);
+
+            //    if (role != null &&
+            //        await userStateStorage.GetAsync() == userStateOptions.DefaultUserState)
+            //    {
+            //        await userStateStorage.SetAsync(role);
+            //    }
+
+            //    await next();
+            //});
+
+            app.UseMyCatchException();
             app.UseExecutors();
-
-            app.Use(async (updateContext, _) => 
-                await updateContext.Client.SendTextMessageAsync("Мені нема чим тобі відповіти")
-            ); 
+            app.UseUpdateNotHandle();
+            
             app.Run();
 
             Console.ReadLine();

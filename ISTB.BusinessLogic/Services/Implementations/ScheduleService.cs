@@ -45,7 +45,8 @@ namespace ISTB.BusinessLogic.Services.Implementations
             var schedule = await _scheduleRepository.AddAsync(new Schedule
             {
                 Name = dto.Name,
-                UserId = user.Id
+                UserId = user.Id,
+                DateTimeWhenWeekChosen = DateTime.UtcNow,
             });
             return _mapper.Map<ScheduleDTO>(schedule);
         }

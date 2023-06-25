@@ -1,4 +1,4 @@
-﻿using ISTB.Framework.TelegramBotApplication.Factories.Implementations;
+﻿using ISTB.Framework.TelegramBotApplication.Helpers.Factories.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;

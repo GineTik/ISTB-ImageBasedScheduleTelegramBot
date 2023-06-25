@@ -1,8 +1,8 @@
 ﻿using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using System.Reflection;
 using Telegram.Bot.Types;
-using ISTB.Framework.Executors.Helpers.Factories.Interfaces;
-using ISTB.Framework.Executors.Routing.Storages.TargetMethod;
+using ISTB.Framework.Executors.Storages.TargetMethod;
+using ISTB.Framework.Executors.Storages.Command.Factory;
 
 namespace ISTB.Framework.Executors.Storages.Command
 {

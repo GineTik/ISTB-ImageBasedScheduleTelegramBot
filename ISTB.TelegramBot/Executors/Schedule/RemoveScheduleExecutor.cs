@@ -2,11 +2,9 @@
 using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Attributes.TargetExecutorAttributes;
 using ISTB.Framework.Executors;
-using ISTB.Framework.Executors.Helpers.Factories.Interfaces;
-using ISTB.Framework.MessagePresets.Extensions.AdvancedTelegramBotClient;
+using ISTB.Framework.Executors.Helpers.Factories.Executors;
 using ISTB.Framework.TelegramBotApplication.AdvancedBotClient.Extensions;
-using ISTB.TelegramBot.Enum.Buttons;
-using ISTB.TelegramBot.MessagePresets.SchedulesMenu;
+using ISTB.TelegramBot.Views.Schedule;
 using Telegram.Bot;
 
 namespace ISTB.TelegramBot.Executors.Schedule
@@ -14,30 +12,25 @@ namespace ISTB.TelegramBot.Executors.Schedule
     public class RemoveScheduleExecutor : Executor
     {
         private readonly IScheduleService _service;
-        private readonly SchedulePresets _presets;
         private readonly IExecutorFactory _factory;
 
-        public RemoveScheduleExecutor(IScheduleService service, SchedulePresets presets, IExecutorFactory factory)
+        public RemoveScheduleExecutor(IScheduleService service, IExecutorFactory factory)
         {
             _service = service;
-            _presets = presets;
             _factory = factory;
         }
 
         [TargetCommands("remove_schedule")]
-        public async Task RemoveScheduleCommand()
+        public async Task ShowSchedulesToRemove()
         {
-            var executor = _factory.CreateExecutor<GetScheduleExecutor>();
-            await executor.SendSchedules(
-                "Виберіть розклад, який бажаєте видалити",
-                ScheduleButtons.RemoveSchedule
-            );
+            var schedules = await _service.GetListByTelegramUserIdAsync(UpdateContext.TelegramUserId);
+            await ExecuteAsync<RemoveScheduleView>(v => v.ChooseScheduleToRemove(schedules));
         }
 
         [TargetCallbacksDatas(nameof(RemoveSchedule))]
-        public async Task RemoveSchedule(int scheduleId, int? messageId)
+        public async Task RemoveSchedule(int scheduleId)
         {
-            await Client.DeleteCallbackQueryMessageAsync();
+            await Client.DeleteMessageAsync();
 
             await _service.RemoveByIdAsync(new RemoveScheduleByIdDTO()
             {
@@ -45,20 +38,7 @@ namespace ISTB.TelegramBot.Executors.Schedule
                 TelegramUserId = UpdateContext.TelegramUserId
             });
 
-            if (messageId != null)
-            {
-                var preset = await _presets.GetSchedulesAsync();
-                await Client.EditMessageResponseAsync(
-                    messageId.Value,
-                    preset
-                ); 
-            }
-            else
-            {
-                await Client.SendTextMessageAsync(
-                    "Розклад видалений"
-                );
-            }
+            await ExecuteAsync<RemoveScheduleView>(v => v.ScheduleRemoved());
         }
     }
 }

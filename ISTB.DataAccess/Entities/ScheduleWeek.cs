@@ -2,7 +2,7 @@
 {
     public class ScheduleWeek : Entity
     {
-        public uint? Position { get; set; }
+        public int Position { get; set; }
 
         public int ScheduleId { get; set; }
         public Schedule Schedule { get; set; }

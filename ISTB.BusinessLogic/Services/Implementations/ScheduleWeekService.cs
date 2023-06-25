@@ -30,11 +30,39 @@ namespace ISTB.BusinessLogic.Services.Implementations
 
             var week = await _weekRepository.AddAsync(new ScheduleWeek
             {
-                Position = null,
+                Position = dto.Position,
                 ScheduleId = dto.ScheduleId,
             });
 
             return _mapper.Map<ScheduleWeekDTO>(week);
+        }
+
+        public async Task<ScheduleWeekDTO> GetTodayWeekAsync(int scheduleId)
+        {
+            var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
+
+            if (schedule == null)
+                throw new InvalidOperationException("schedule is null");
+
+            var selectedWeekNumber = schedule.ChosenAsCurrentWeekPosition;
+            var dateTimeWhenWeekChosen = schedule.DateTimeWhenWeekChosen;
+
+            var elapsedWeeks = getNumberWeeksElapsedSinceDate(dateTimeWhenWeekChosen);
+            var totalWeeksCount = await _weekRepository.GetWeeksCountByScheduleIdAsync(scheduleId);
+
+            var todayWeekNumber = (selectedWeekNumber + elapsedWeeks) % totalWeeksCount;
+            var todayWeek = await _weekRepository.GetByPositionAsync(scheduleId, (uint)todayWeekNumber);
+
+            return _mapper.Map<ScheduleWeekDTO>(todayWeek);
+        }
+
+        private static int getNumberWeeksElapsedSinceDate(DateTime date)
+        {
+            var unnecessaryDays = (int)date.DayOfWeek;
+            date.AddDays(-unnecessaryDays); // substract days
+
+            var elapsedWeeks = (DateTime.UtcNow - date).TotalDays / 7;
+            return (int)Math.Ceiling(elapsedWeeks) - 1;
         }
 
         public async Task<ScheduleWeekWithDaysDTO?> GetWeekByIdAsync(int weekId)
@@ -58,6 +86,18 @@ namespace ISTB.BusinessLogic.Services.Implementations
         {
             var weeks = await _weekRepository.GetByScheduleIdAsync(scheduleId);
             return _mapper.Map<IEnumerable<ScheduleWeekDTO>>(weeks);
+        }
+
+        public async Task ChooseWeekLikeCurrentAsync(ChooseCurrentWeekDTO dto)
+        {
+            var schedule = await _scheduleRepository.GetByIdAsync(dto.ScheduleId);
+
+            if (schedule == null)
+                throw new InvalidOperationException("schedule is null");
+
+            schedule.ChosenAsCurrentWeekPosition = dto.WeekPosition;
+            schedule.DateTimeWhenWeekChosen = DateTime.UtcNow;
+            await _scheduleRepository.UpdateAsync(schedule);
         }
     }
 }

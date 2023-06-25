@@ -7,7 +7,7 @@ namespace ISTB.DataAccess.Entities
         [Required]
         public long TelegramUserId { get; set; }
 
-        public ICollection<Role> Roles { get; set; }
-        public ICollection<Schedule> Groups { get; set; }
+        public int RoleId { get; set; }
+        public IEnumerable<Schedule> Groups { get; set; }
     }
 }

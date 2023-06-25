@@ -5,18 +5,30 @@ namespace ISTB.Framework.TelegramBotApplication.Context
 {
     public class UpdateContext
     {
-        public IAdvancedTelegramBotClient Client { get; set; }
-        public Update Update { get; set; }
-        public CancellationToken CancellationToken { get; set; }
+        public IAdvancedTelegramBotClient Client { get; set; } = default!;
+        public Update Update { get; set; } = default!;
+        public CancellationToken CancellationToken { get; set; } = default!;
 
-        public long ChatId => Update.Message?.Chat?.Id ??
-                              Update.CallbackQuery?.Message?.Chat?.Id ??
-                              throw new InvalidDataException("Don't found ChatId");
-        public long TelegramUserId => Update.Message?.From?.Id ??
-                              Update.CallbackQuery?.Message?.Chat?.Id ?? // чомусь в Chat знаходиться користувач який нажав на кнопку, а в From знаходиться чат
-                              throw new InvalidDataException("Don't found TelegramUserId");
-        public int MessageId => Update.Message?.MessageId ??
-                              Update.CallbackQuery?.Message?.MessageId ??
-                              throw new InvalidDataException("Don't found MessageId");
+        public Message Message => Update.Message ??
+                                Update.CallbackQuery?.Message ??
+                                Update.EditedMessage ??
+                                Update.ChannelPost ??
+                                throw new InvalidDataException("Don't found Message");
+
+        public User User => Update.Message?.From ??
+                            Update.CallbackQuery?.From ??
+                            Update.EditedMessage?.From ??
+                            Update.ChannelPost?.From ??
+                            throw new InvalidDataException("Don't found User");
+
+        public Chat Chat => Update.Message?.Chat ??
+                            Update.CallbackQuery?.Message?.Chat ??
+                            Update.EditedMessage?.Chat ??
+                            Update.ChannelPost?.Chat ??
+                            throw new InvalidDataException("Don't found Chat");
+
+        public long ChatId => Chat.Id;
+        public long TelegramUserId => User.Id;
+        public int MessageId => Message.MessageId;
     }
 }

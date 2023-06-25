@@ -34,12 +34,7 @@ namespace ISTB.DataAccess.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Roles");
 
@@ -58,6 +53,12 @@ namespace ISTB.DataAccess.EF.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChosenAsCurrentWeekPosition")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTimeWhenWeekChosen")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -87,8 +88,8 @@ namespace ISTB.DataAccess.EF.Migrations
                     b.Property<string>("ImageFileUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Position")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
                     b.Property<int>("ScheduleWeekId")
                         .HasColumnType("int");
@@ -108,8 +109,8 @@ namespace ISTB.DataAccess.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<long?>("Position")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
                     b.Property<int>("ScheduleId")
                         .HasColumnType("int");
@@ -129,22 +130,28 @@ namespace ISTB.DataAccess.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<long>("TelegramUserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.HasIndex("TelegramUserId")
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
 
-            modelBuilder.Entity("ISTB.DataAccess.Entities.Role", b =>
-                {
-                    b.HasOne("ISTB.DataAccess.Entities.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoleId = 1,
+                            TelegramUserId = 502351239L
+                        });
                 });
 
             modelBuilder.Entity("ISTB.DataAccess.Entities.Schedule", b =>
@@ -178,6 +185,20 @@ namespace ISTB.DataAccess.EF.Migrations
                     b.Navigation("Schedule");
                 });
 
+            modelBuilder.Entity("ISTB.DataAccess.Entities.User", b =>
+                {
+                    b.HasOne("ISTB.DataAccess.Entities.Role", null)
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ISTB.DataAccess.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("ISTB.DataAccess.Entities.Schedule", b =>
                 {
                     b.Navigation("Weeks");
@@ -191,8 +212,6 @@ namespace ISTB.DataAccess.EF.Migrations
             modelBuilder.Entity("ISTB.DataAccess.Entities.User", b =>
                 {
                     b.Navigation("Groups");
-
-                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }
