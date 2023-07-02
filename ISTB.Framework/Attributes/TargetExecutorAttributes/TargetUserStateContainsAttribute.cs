@@ -3,9 +3,9 @@ using Telegram.Bot.Types;
 
 namespace ISTB.Framework.Attributes.TargetExecutorAttributes
 {
-    public class TargetUserStateAttribute : TargetAttribute
+    public class TargetUserStateContainsAttribute : TargetAttribute
     {
-        public TargetUserStateAttribute(string userStates)
+        public TargetUserStateContainsAttribute(string userStates)
         {
             UserStates = userStates;
         }

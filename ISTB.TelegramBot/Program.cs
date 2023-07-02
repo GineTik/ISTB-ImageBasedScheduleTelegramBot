@@ -1,9 +1,6 @@
 ﻿using ISTB.BusinessLogic.AutoMapper.Profiles;
-using ISTB.BusinessLogic.Services.Interfaces;
 using ISTB.Framework.Executors.Configuration.Middleware.TargetExecutor;
-using ISTB.Framework.Executors.Configuration.Options;
 using ISTB.Framework.Executors.Configuration.Services;
-using ISTB.Framework.Executors.Storages.UserState;
 using ISTB.Framework.Session.Extensions.Services;
 using ISTB.Framework.TelegramBotApplication;
 using ISTB.Framework.TelegramBotApplication.Configuration.ReceiverOption;
@@ -31,26 +28,12 @@ namespace ISTB.TelegramBot
 
             var app = builder.Build();
 
-            //app.Use(async (provider, updateContext, next) => {
-            //    var userService = provider.GetRequiredService<IUserService>();
-            //    var userStateStorage = provider.GetRequiredService<IUserStateStorage>();
-            //    var userStateOptions = provider.GetRequiredService<UserStateOptions>();
-
-            //    var role = await userService.GetRoleByTelegramUserIdAsync(updateContext.TelegramUserId);
-
-            //    if (role != null &&
-            //        await userStateStorage.GetAsync() == userStateOptions.DefaultUserState)
-            //    {
-            //        await userStateStorage.SetAsync(role);
-            //    }
-
-            //    await next();
-            //});
-
             app.UseMyCatchException();
+
+            app.UseRolesInUserStates();
             app.UseExecutors();
-            app.UseUpdateNotHandle();
             
+            app.UseUpdateNotHandle();
             app.Run();
 
             Console.ReadLine();

@@ -14,10 +14,10 @@ namespace ISTB.TelegramBot.Executors.ScheduleDay
     public class EditDayExecutor : Executor
     {
         private readonly IUserStateStorage _userStateStorage;
-        private readonly Session<int> _session;
+        private readonly ISession<int> _session;
         private readonly IScheduleDayService _dayService;
 
-        public EditDayExecutor(IUserStateStorage userStateStorage, IScheduleDayService dayService, Session<int> session)
+        public EditDayExecutor(IUserStateStorage userStateStorage, IScheduleDayService dayService, ISession<int> session)
         {
             _userStateStorage = userStateStorage;
             _dayService = dayService;
