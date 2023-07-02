@@ -23,7 +23,7 @@ namespace ISTB.Framework.Executors.Storages.UserState
             telegramUserId ??= _updateContext.TelegramUserId;
             
             var userStates = await GetAsync(telegramUserId);
-            userStates.Concat(new[] { state });
+            userStates = userStates.Concat(new[] { state });
 
             await SetRangeAsync(userStates, telegramUserId);
         }

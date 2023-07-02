@@ -15,10 +15,10 @@ namespace ISTB.TelegramBot.Executors.Schedule
     public class EditScheduleExecutor : Executor
     {
         private readonly IScheduleService _service;
-        private readonly Session<int> _session;
+        private readonly ISession<int> _session;
         private readonly IUserStateStorage _userState;
 
-        public EditScheduleExecutor(IScheduleService service, Session<int> session,
+        public EditScheduleExecutor(IScheduleService service, ISession<int> session,
             IUserStateStorage userStateStorage)
         {
             _service = service;

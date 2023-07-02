@@ -2,7 +2,7 @@
 
 namespace ISTB.Framework.Session
 {
-    public class Session<T>
+    public class Session<T> : ISession<T>
     {
         private string _key => "SessionData:" + typeof(T).Name;
 

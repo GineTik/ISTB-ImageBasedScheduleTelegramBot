@@ -15,7 +15,7 @@ namespace ISTB.Framework.Session.Extensions.Services
         public static IServiceCollection AddSessions<TSaver>(this IServiceCollection services)
             where TSaver : class, ISessionDataSaver
         {
-            services.AddTransient(typeof(Session<>));
+            services.AddTransient(typeof(ISession<>), typeof(Session<>));
             services.AddTransient<ISessionDataStorage, SessionDataStorage>();
             services.AddSingleton<ISessionDataSaver, TSaver>();
             return services;
